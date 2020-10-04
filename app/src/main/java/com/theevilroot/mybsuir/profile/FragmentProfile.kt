@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.api.BaseFragment
 import com.theevilroot.mybsuir.api.event.Event
+import com.theevilroot.mybsuir.api.groupOf
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import kotlinx.android.synthetic.main.f_profile.*
 import kotlinx.android.synthetic.main.f_profile.profile_log_out_button
@@ -28,9 +29,18 @@ class FragmentProfile : BaseFragment(R.layout.f_profile), IProfileView, KodeinAw
         ProfileController(this, profileModel)
     }
 
+    private val profileInfoGroup by lazy {
+        groupOf(profile_image_view, profile_course_view, profile_id_view, profile_name_view, profile_group, profile_group_label, profile_log_out_button)
+    }
+
+    private val profileProgressGroup by lazy {
+        groupOf(profile_progress_view)
+    }
+
     override fun View.onView() {
         profile_log_out_button.setOnClickListener { controller.logout() }
         controller.updateProfileInfo()
+        loadingState(true)
     }
 
     override fun onSystemEvent(event: Event) {
@@ -41,6 +51,7 @@ class FragmentProfile : BaseFragment(R.layout.f_profile), IProfileView, KodeinAw
     }
 
     override fun profileState(profile: ProfileInfo) {
+        loadingState(false)
         with(profile) {
             profile_name_view.text = "$lastName $firstName $middleName"
             profile_id_view.text = "N/A"
@@ -55,11 +66,18 @@ class FragmentProfile : BaseFragment(R.layout.f_profile), IProfileView, KodeinAw
     }
 
     override fun errorState(message: String) {
-       view?.let { Toast.makeText(it.context, "Error: $message", Toast.LENGTH_LONG).show() }
+        loadingState(false)
+        view?.let { Toast.makeText(it.context, "Error: $message", Toast.LENGTH_LONG).show() }
     }
 
     override fun loadingState(shown: Boolean) {
-         profile_view.text = if (shown) "Loading..." else ""
+        if (shown) {
+            profileProgressGroup.visible()
+            profileInfoGroup.invisible()
+        } else {
+            profileProgressGroup.gone()
+            profileInfoGroup.visible()
+        }
     }
 
     override fun requireAuth() {
