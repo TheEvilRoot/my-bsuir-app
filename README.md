@@ -1,6 +1,16 @@
 MyBsuir
 -------
 
+Roadmap
+-------
+
+ - [x] Create basic project
+ - [x] Create API interaction infrastructure
+ - [x] Create authentication API
+ - [x] Create login screen with auth functional
+ - [ ] Create profile fetching API
+ - [ ] Create basic profile screen with info
+
 Requirements
 ------------
 
