@@ -30,7 +30,12 @@ class AuthController (
         if (result.loggedIn) {
             authView.successState()
         } else {
-            authView.errorState("Auth failed: ${result.message}")
+            val message = result.message
+            if ("Invalid Credentials" in message) {
+                authView.errorState("Неправильный логин или пароль.")
+            } else {
+                authView.errorState(message)
+            }
         }
     }
 

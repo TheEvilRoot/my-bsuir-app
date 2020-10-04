@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">MyBsuir</string>
+    <string name="login_prompt">Добро пожаловать в интегрированную информационную систему(ИИС)\n
+        «БГУИР: Университет».</string>
+    <string name="login_hint">Для входа в систему используйте учетные данные, что и для доступа в интернет (номер студенческого билета и пароль)</string>
 </resources>

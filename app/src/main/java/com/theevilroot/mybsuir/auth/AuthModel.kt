@@ -13,7 +13,7 @@ class AuthModel (
         val call = apiService.login(userCredentials).execute()
         if (call.isSuccessful) {
             val body = call.body() ?: throw Exception("Body is null")
-            val cookie = call.headers()["Set-Cookie"] ?: throw Exception("No Set-Cookie")
+            val cookie = call.headers()["Set-Cookie"] ?: return body
             authProvider.setCookie(cookie)
             return body
         } else {

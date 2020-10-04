@@ -46,7 +46,7 @@ class FragmentProfile : BaseFragment(R.layout.f_profile), IProfileView, KodeinAw
     }
 
     override fun requireAuth() {
-        findNavController().navigate(R.id.dialog_login)
+        findNavController().navigate(R.id.open_login)
     }
 
 }
