@@ -5,13 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
-
     <fragment
         android:id="@+id/navigation_host"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -21,8 +14,6 @@
         app:navGraph="@navigation/app_navigation"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/toolbar"
-        android:layout_marginTop="?actionBarSize"
         android:layout_above="@id/bottom_navigation"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

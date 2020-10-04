@@ -8,13 +8,15 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.lang.Exception
 
 open class CompositeDataSource<T> (
-    val networkDataSource: () -> Observable<T>
+    private val networkDataSource: () -> Observable<T>,
+    private val diskDataSource: () -> Observable<T>,
+    protected val cacheOnDisk: (T) -> Unit = { }
 ) {
 
     protected var dataCache: T? = null
 
     fun getData(): Single<T> =
-        Observable.concat(getDataFromMemory(), getDataFromNetwork(), getDataFromDisk())
+        Observable.concat(getDataFromMemory(), getDataFromDisk(), getDataFromNetwork())
             .firstElement()
             .subscribeOn(Schedulers.io())
             .toSingle()
@@ -32,20 +34,16 @@ open class CompositeDataSource<T> (
         networkDataSource().onErrorComplete {
             it.printStackTrace()
             !(it is SecurityException || it is AuthProvider.NoAuthDataException)
-        }.doOnNext { cacheInMemory(it) }
+        }.doOnNext { cacheInMemory(it); cacheOnDisk(it) }
 
     private fun getDataFromDisk(): Observable<T> =
-        Observable.create<T> {
-            it.onComplete()
+        diskDataSource().onErrorComplete {
+            it.printStackTrace()
+            it !is SecurityException
         }.doOnNext { cacheInMemory(it) }
-
-    protected fun cacheOnDisk(t: T) {
-
-    }
 
     protected fun cacheInMemory(t: T) {
         dataCache = t
-        cacheOnDisk(t)
     }
 
 }

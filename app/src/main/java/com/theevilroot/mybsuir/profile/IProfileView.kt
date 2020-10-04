@@ -12,4 +12,6 @@ interface IProfileView {
 
     fun requireAuth()
 
+    fun requirePermissions()
+
 }

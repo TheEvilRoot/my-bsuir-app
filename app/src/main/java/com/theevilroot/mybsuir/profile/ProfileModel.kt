@@ -4,6 +4,7 @@ import com.theevilroot.mybsuir.api.CompositeDataSource
 import com.theevilroot.mybsuir.auth.AuthProvider
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
+import io.reactivex.rxjava3.core.Observable
 
 class ProfileModel (
     private val apiService: ApiService,
@@ -11,7 +12,7 @@ class ProfileModel (
 ) {
 
     val profileDataSource =
-        CompositeDataSource<ProfileInfo> {
+        CompositeDataSource<ProfileInfo>({
             authProvider.dataSource.getData().map {
                 val call = apiService.getProfileInfo(it).execute()
                 if (call.isSuccessful) {
@@ -20,6 +21,10 @@ class ProfileModel (
                     throw Exception("Unexpected network error : ${call.code()} ${call.errorBody()?.string()}")
                 }
             }.toObservable()
-        }
+        }, { Observable.create<ProfileInfo> { it.onComplete() } })
+
+    fun logout() {
+        authProvider.dataSource.clear()
+    }
 
 }

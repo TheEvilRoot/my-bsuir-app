@@ -2,8 +2,99 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/profile_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/b_profile_header"
+        android:paddingBottom="16dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/profile_image_view"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            tools:srcCompat="@tools:sample/avatars"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:id="@+id/profile_name_view"
+            tools:text="Фамилия Имя Отчество"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_image_view"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"/>
+
+        <TextView
+            android:id="@+id/profile_id_view"
+            tools:text="85050005"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_name_view"
+            android:layout_centerHorizontal="true"
+            android:textSize="18sp"
+            android:layout_marginTop="4dp"
+            android:textColor="@android:color/white"/>
+
+
+        <TextView
+            android:id="@+id/profile_course_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="3 курс ФКСиС\nспециальности КСиС"
+            android:textAlignment="center"
+            android:layout_below="@id/profile_id_view"
+            android:layout_marginTop="8dp"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@android:color/white"/>
+
+
+
+        <TextView
+            android:id="@+id/profile_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Группа: "
+            android:layout_below="@id/profile_course_view"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@android:color/white"/>
+
+            <TextView
+            android:id="@+id/profile_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="850501"
+            android:layout_below="@id/profile_course_view"
+            android:layout_toEndOf="@id/profile_group_label"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="8dp"
+            android:textAlignment="textEnd"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@android:color/white"/>
+
+        <ImageButton
+            android:id="@+id/profile_log_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_baseline_exit_to_app_24"
+            android:backgroundTint="@android:color/transparent"
+            android:tint="@android:color/white"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="8dp"/>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/profile_view"

@@ -25,7 +25,7 @@ class App: Application(), KodeinAware {
 
         bind<EventBus>(tag = "System") with singleton { EventBus() }
         bind<ApiService>() with singleton { createApiService() }
-        bind<AuthProvider>() with singleton { AuthProvider() }
+        bind<AuthProvider>() with singleton { AuthProvider(instance()) }
         bind<ProfileModel>() with singleton { ProfileModel(instance(), instance()) }
         bind<AuthModel>() with singleton { AuthModel(instance(), instance()) }
     }
