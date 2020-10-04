@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_navigation"
+    app:startDestination="@id/fragment_profile">
+    <fragment
+        android:id="@+id/fragment_profile"
+        android:name="com.theevilroot.mybsuir.profile.FragmentProfile"
+        tools:layout="@layout/f_profile"
+        android:label="Profile" />
+    <dialog
+        android:id="@+id/dialog_login"
+        android:name="com.theevilroot.mybsuir.auth.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/f_login" />
+
+</navigation>
