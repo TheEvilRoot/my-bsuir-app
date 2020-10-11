@@ -8,4 +8,7 @@ class CredentialsStore {
         token = t
     }
 
+    fun hasToken(): Boolean =
+        token != null
+
 }

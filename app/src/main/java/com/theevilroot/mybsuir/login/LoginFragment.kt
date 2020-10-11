@@ -1,6 +1,9 @@
 package com.theevilroot.mybsuir.login
 
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
@@ -8,6 +11,7 @@ import com.theevilroot.mybsuir.common.data.InternalException
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.f_login.view.*
 import org.kodein.di.generic.instance
+import java.net.UnknownHostException
 
 /**
  * View states:
@@ -86,25 +90,44 @@ class LoginFragment : BaseFragment(R.layout.f_login) {
         controller.login(usernameText, passwordText)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(::setLoginSucceed) {
-                if (it is InternalException) {
-                    applyState(LoginViewState.LoginFailedState(it.msg))
-                } else{
-                    applyState(LoginViewState.LoginFailedState("Произошла непредвиденная ошибка\n${it.javaClass.simpleName}:\n ${it.localizedMessage}"))
-                }
+                applyState(LoginViewState.LoginFailedState(when (it) {
+                    is InternalException -> it.msg
+                    is UnknownHostException ->"Похоже вы не подключены к интернету.\n" +
+                            "Включите WiFi или мобильную передачу данных и попробуйте снова :)"
+                    else -> "Произошла непредвиденная ошибка\n" +
+                            "${it.javaClass.simpleName}:\n ${it.localizedMessage}"
+                }))
             }
     }
 
     private fun setLoginSucceed() {
-        view?.applyState(LoginViewState.LoginFailedState("Success"))
+        val controller = findNavController()
+        controller.popBackStack()
+        if (controller.currentBackStackEntry == null) {
+            controller.navigate(R.id.fragment_profile)
+        }
     }
 
     private fun View.applyState(newState: LoginViewState) = with(newState) {
         login_content.visibility = newState.contentVisibility.visibility()
-        login_progress.visibility = newState.progressVisibility.visibility()
+        login_loading.visibility = newState.progressVisibility.visibility()
         login_error.visibility = newState.errorVisibility.visibility()
 
         if (this is LoginViewState.LoginFailedState)
             login_error.text = errorMessage
+
+        if (this is LoginViewState.LoginLoadingState)
+            hideKeyboard()
+    }
+
+    private fun hideKeyboard() {
+        activity?.let {
+            val imm = it.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+            it.currentFocus?.let {
+                imm.hideSoftInputFromWindow(it.windowToken, 0)
+            }
+        }
+
     }
 
     private fun Boolean.visibility() = if (this) View.VISIBLE else View.GONE

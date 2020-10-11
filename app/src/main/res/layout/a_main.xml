@@ -11,15 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_bar"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/app_navigation" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
+        android:id="@+id/navigation_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/app_navigation"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/Widget.MaterialComponents.BottomNavigationView"
+        app:itemTextColor="@color/colorAccent"
+        app:itemIconTint="@color/colorAccent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

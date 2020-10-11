@@ -39,7 +39,7 @@ class LoginModel (context: Context, val api: ApiService) {
             val body = call.body() ?:
                     return null
             if (!body.loggedIn) {
-                return if (body.message.contains("Invalid credentials"))
+                return if (body.message.contains("Invalid Credentials"))
                     LoginResult(body, "Неверные имя пользователя или пароль")
                 else LoginResult(body, "Не удалось войти: сервис временно недоступен")
             }
