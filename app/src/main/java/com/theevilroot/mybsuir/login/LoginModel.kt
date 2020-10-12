@@ -2,6 +2,7 @@ package com.theevilroot.mybsuir.login
 
 import android.content.Context
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.data.LoginRequest
@@ -28,12 +29,18 @@ class LoginModel (context: Context, val api: ApiService) {
         return gson.fromJson(obj, UserCache::class.java)
     }
 
+    fun writeCacheFile(userCache: UserCache) {
+        val file = File(appContext.filesDir, "usercache.dat")
+        val cacheObj = gson.toJsonTree(userCache)
+        file.writeText(gson.toJson(cacheObj))
+    }
+
     fun checkUserToken(token: String): Boolean {
         val call = api.personalInformation(token).execute()
         return call.code() == 200
     }
 
-    fun login(username: String, password: String): LoginResult? {
+    fun login(username: String, password: String, saveToken: Boolean, saveCredentials: Boolean): LoginResult? {
         val call = api.login(LoginRequest(username, password)).execute()
         if (call.code() == 200) {
             val body = call.body() ?:
@@ -47,6 +54,11 @@ class LoginModel (context: Context, val api: ApiService) {
             val cookie = call.headers()["Set-Cookie"]
                 ?: return LoginResult(body, "Невозможно получить токен авторизации от сервера")
 
+            if (saveToken) {
+                writeCacheFile(if (saveCredentials)
+                    UserCache(cookie, username to password)
+                else UserCache(cookie))
+            }
             return LoginResult(body, "Вход успешен", cookie)
         }
         return null
