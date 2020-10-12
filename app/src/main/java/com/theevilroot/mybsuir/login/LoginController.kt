@@ -48,6 +48,7 @@ class LoginController (
                 ?: return@create it.onError(InternalException("Ошибка авторизации: сервер временно недоступен"))
             if (result.cookie == null)
                 return@create it.onError(InternalException(result.message))
+            store.updateToken(result.cookie)
             it.onComplete()
         }.subscribeOn(Schedulers.io())
 

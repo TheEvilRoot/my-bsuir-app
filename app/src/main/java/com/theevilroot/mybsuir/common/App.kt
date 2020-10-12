@@ -2,6 +2,7 @@ package com.theevilroot.mybsuir.common
 
 import android.app.Application
 import com.theevilroot.mybsuir.login.LoginModel
+import com.theevilroot.mybsuir.profile.ProfileModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.kodein.di.Kodein
@@ -26,6 +27,7 @@ class App : Application(), KodeinAware {
 
         /* Layer 1 */
         bind<LoginModel>() with singleton { LoginModel(applicationContext, instance()) }
+        bind<ProfileModel>() with singleton { ProfileModel(instance(), instance()) }
     }
 
     private fun createHttpClient(): OkHttpClient =

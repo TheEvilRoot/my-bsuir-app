@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, NavController.OnDestinati
         val controller = findNavController(R.id.navigation_host)
         controller.addOnDestinationChangedListener(this)
 
-        if (!store.hasToken()) {
+        if (!store.hasToken() && false) {
             controller.navigate(R.id.fragment_login)
         }
     }

@@ -4,6 +4,9 @@ class CredentialsStore {
 
     private var token: String? = null
 
+    fun getToken(): String? =
+        token
+
     fun updateToken(t: String) {
         token = t
     }

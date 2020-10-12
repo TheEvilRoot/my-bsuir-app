@@ -30,4 +30,5 @@ open class BaseFragment (
 
     open fun View.onView() { }
 
+    protected fun Boolean.visibility() = if (this) View.VISIBLE else View.GONE
 }

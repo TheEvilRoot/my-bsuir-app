@@ -129,6 +129,4 @@ class LoginFragment : BaseFragment(R.layout.f_login) {
         }
 
     }
-
-    private fun Boolean.visibility() = if (this) View.VISIBLE else View.GONE
 }
