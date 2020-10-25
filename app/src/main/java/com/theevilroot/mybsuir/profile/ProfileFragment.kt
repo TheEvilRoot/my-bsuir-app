@@ -3,6 +3,7 @@ package com.theevilroot.mybsuir.profile
 import android.view.View
 import android.widget.Toast
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
@@ -11,6 +12,7 @@ import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.data.InternalException
 import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
+import com.theevilroot.mybsuir.profile.skills.SkillsAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.f_profile.view.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
@@ -52,7 +54,15 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
     private val model: ProfileModel by instance()
     private val controller by lazy { ProfileController(model) }
 
+    private val skillsAdapter by lazy { SkillsAdapter() }
+
     override fun View.onView() {
+        with(skills_view) {
+            adapter = skillsAdapter
+            layoutManager = LinearLayoutManager(context,
+                LinearLayoutManager.HORIZONTAL, false)
+        }
+
         profile_app_bar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBar, offset ->
             if (appBar.totalScrollRange == 0) return@OnOffsetChangedListener
             val value = abs(offset).toFloat() / appBar.totalScrollRange.toFloat()
@@ -71,10 +81,9 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
                         is InternalException -> it.msg
                         is NoCredentialsException ->
                             return@subscribe findNavController().navigate(R.id.fragment_login)
-                        is UnknownHostException ->"Похоже вы не подключены к интернету.\n" +
-                                "Включите WiFi или мобильную передачу данных и попробуйте снова :)"
-                        else -> "Произошла непредвиденная ошибка\n" +
-                                "${it.javaClass.simpleName}:\n ${it.localizedMessage}"
+                        is UnknownHostException -> context.getString(R.string.no_internet_error)
+                        else -> context.getString(R.string.unexpected_error,
+                            it.javaClass.simpleName, it.localizedMessage)
                 }))
             }
     }
@@ -107,6 +116,8 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
                 Glide.with(context)
                     .load(photoUrl)
                     .into(profile_image)
+
+                skillsAdapter.setSkills(personalCV.skills)
             }
         }
     }

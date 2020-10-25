@@ -19,5 +19,6 @@ data class PersonalCV (
     val officePassword: String,
     val speciality: String,
     val studentGroup: String,
-    val birthDate: String
+    val birthDate: String,
+    val skills: List<Skill>
 )

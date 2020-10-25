@@ -47,4 +47,10 @@ Nulla laoreet dapibus massa non faucibus. Mauris fermentum porttitor sem id matt
 
 Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, consequat pharetra risus. Integer tellus nulla, facilisis a consectetur a, congue vel nulla. Praesent iaculis, nunc vel maximus eleifend, turpis velit pretium nisl, id fringilla neque nibh vel risus. Mauris sed fermentum ligula, id faucibus eros. Cras tempor magna neque, nec suscipit orci egestas at. Nullam varius sagittis accumsan.
     </string>
+    <string name="no_internet_error">Похоже вы не подключены к интернету.
+        Включите WiFi или мобильную передачу данных и попробуйте снова :)</string>
+    <string name="unexpected_error">Произошла непредвиденная ошибка
+        %1$s:
+        %2$s</string>
+    <string name="skills_title">Ключенвые навыки</string>
 </resources>
