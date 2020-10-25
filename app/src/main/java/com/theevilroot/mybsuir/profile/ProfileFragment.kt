@@ -1,7 +1,6 @@
 package com.theevilroot.mybsuir.profile
 
 import android.view.View
-import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -12,11 +11,15 @@ import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.data.InternalException
 import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
-import com.theevilroot.mybsuir.profile.skills.SkillsAdapter
+import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
+import com.theevilroot.mybsuir.common.data.Reference
+import com.theevilroot.mybsuir.common.data.Skill
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.f_profile.view.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
 import kotlinx.android.synthetic.main.i_profile_header.view.*
+import kotlinx.android.synthetic.main.i_reference.view.*
+import kotlinx.android.synthetic.main.i_skill.view.*
 import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 import kotlin.math.abs
@@ -54,13 +57,21 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
     private val model: ProfileModel by instance()
     private val controller by lazy { ProfileController(model) }
 
-    private val skillsAdapter by lazy { SkillsAdapter() }
+    private val skillsAdapter by lazy { SimpleAdapter<Skill>(R.layout.i_skill) { value.text = it.name } }
+    private val referencesAdapter by lazy { SimpleAdapter<Reference>(R.layout.i_reference) {
+        url.text = it.reference
+        title.text = it.name
+    } }
 
     override fun View.onView() {
         with(skills_view) {
             adapter = skillsAdapter
             layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL, false)
+        }
+        with(references_view) {
+            adapter = referencesAdapter
+            layoutManager = LinearLayoutManager(context)
         }
 
         profile_app_bar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBar, offset ->
@@ -117,7 +128,12 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
                     .load(photoUrl)
                     .into(profile_image)
 
-                skillsAdapter.setSkills(personalCV.skills)
+                skillsAdapter.setData(skills)
+                referencesAdapter.setData(references)
+
+                profile_no_references.visibility = references.isEmpty().visibility()
+
+                profile_summary.text = summary ?: getString(R.string.no_summary)
             }
         }
     }

@@ -23,6 +23,9 @@ class ProfileController (
                 "студент ${personalCv.course} курса\nфакультета ${personalCv.faculty}\nспециальности ${personalCv.speciality}",
                 (personalCv.rating * 2).toInt(),
                 personalCv.photoUrl ?: "https://iis.bsuir.by/assets/default-photo.gif",
+                personalCv.skills,
+                personalCv.summary,
+                personalCv.references,
                 personalInformation,
                 personalCv
             )

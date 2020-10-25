@@ -20,5 +20,6 @@ data class PersonalCV (
     val speciality: String,
     val studentGroup: String,
     val birthDate: String,
-    val skills: List<Skill>
+    val skills: List<Skill>,
+    val references: List<Reference>
 )
