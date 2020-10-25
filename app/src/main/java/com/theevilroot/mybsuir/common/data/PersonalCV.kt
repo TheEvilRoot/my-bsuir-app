@@ -6,7 +6,7 @@ data class PersonalCV (
     val firstName: String,
     val lastName: String,
     val middleName: String,
-    val photoUrl: String,
+    val photoUrl: String?,
     val showRating: Boolean,
     val published: Boolean,
     val searchJob: Boolean,

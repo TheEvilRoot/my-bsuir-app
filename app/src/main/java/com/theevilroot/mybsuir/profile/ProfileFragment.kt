@@ -3,6 +3,7 @@ package com.theevilroot.mybsuir.profile
 import android.view.View
 import android.widget.Toast
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.theevilroot.mybsuir.R
@@ -102,6 +103,10 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
                 profile_faculty.text = facultyString
                 profile_rate_bar.progress = rate
                 profile_rate_bar.max = 10
+
+                Glide.with(context)
+                    .load(photoUrl)
+                    .into(profile_image)
             }
         }
     }

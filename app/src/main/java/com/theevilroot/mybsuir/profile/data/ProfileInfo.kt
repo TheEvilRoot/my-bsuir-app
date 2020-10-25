@@ -9,6 +9,7 @@ data class ProfileInfo(
     val birthDate: String,
     val facultyString: String,
     val rate: Int,
+    val photoUrl: String,
     val personalInformation: PersonalInformation,
     val personalCV: PersonalCV
 )
