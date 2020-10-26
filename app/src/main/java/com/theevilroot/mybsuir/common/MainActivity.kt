@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.theevilroot.mybsuir.R
 import kotlinx.android.synthetic.main.a_main.*
 import org.kodein.di.Kodein
@@ -27,10 +28,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, NavController.OnDestinati
     private fun initNavigation() {
         val controller = findNavController(R.id.navigation_host)
         controller.addOnDestinationChangedListener(this)
-
-        if (!store.hasToken() && false) {
-            controller.navigate(R.id.fragment_login)
-        }
+        NavigationUI.setupWithNavController(navigation_bar, controller)
     }
 
     override fun onDestinationChanged(controller: NavController, dest: NavDestination, args: Bundle?) {
