@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
+import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.InternalException
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.f_login.view.*
@@ -56,12 +57,14 @@ class LoginFragment : BaseFragment(R.layout.f_login) {
 
     private val model: LoginModel by instance()
     private val store: CredentialsStore by instance()
+    private val cacheController: CacheController by instance()
+
     private val controller: LoginController by lazy { LoginController(model, store) }
 
     override fun View.onView() {
         applyState(LoginViewState.LoginLoadingState)
 
-        controller.getCachedCredentials().observeOn(AndroidSchedulers.mainThread())
+        cacheController.getCachedCredentials().observeOn(AndroidSchedulers.mainThread())
             .subscribe({ isAuthorized ->
                 if (isAuthorized) {
                     return@subscribe setLoginSucceed()

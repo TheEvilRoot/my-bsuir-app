@@ -12,9 +12,11 @@ import com.theevilroot.mybsuir.common.data.InternalException
 import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
+import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.Reference
 import com.theevilroot.mybsuir.common.data.Skill
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.functions.BiFunction
 import kotlinx.android.synthetic.main.f_profile.view.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
 import kotlinx.android.synthetic.main.i_profile_header.view.*
@@ -55,6 +57,8 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
     }
 
     private val model: ProfileModel by instance()
+    private val cacheController: CacheController by instance()
+
     private val controller by lazy { ProfileController(model) }
 
     private val skillsAdapter by lazy { SimpleAdapter<Skill>(R.layout.i_skill) { value.text = it.name } }
@@ -82,22 +86,43 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
         })
 
         applyState(ProfileViewState.ProfileLoading)
+        if (cacheController.hasCredentials())
+            updateProfileInfo()
+        else cacheController.getCachedCredentials()
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap<ProfileInfo?> {
+                    if (it) controller.updateProfileInfo()
+                            .observeOn(AndroidSchedulers.mainThread())
+                    else null
+                }.subscribe({
+                    it?.let { profileUpdateHandler(it) }
+                            ?: findNavController().navigate(R.id.fragment_login)
+                }) { profileUpdateErrorHandler(it) }
+    }
+
+    private fun View.updateProfileInfo() {
         controller.updateProfileInfo()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                applyState(ProfileViewState.ProfileFilled(it))
-            }) {
-                applyState(
-                    ProfileViewState.ProfileError(when (it) {
-                        is InternalException -> it.msg
-                        is NoCredentialsException ->
-                            return@subscribe findNavController().navigate(R.id.fragment_login)
-                        is UnknownHostException -> context.getString(R.string.no_internet_error)
-                        else -> context.getString(R.string.unexpected_error,
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ profileUpdateHandler(it) }) { profileUpdateErrorHandler(it) }
+    }
+
+    private fun View.profileUpdateHandler(it: ProfileInfo) =
+            applyState(ProfileViewState.ProfileFilled(it))
+
+    private fun View.profileUpdateErrorHandler(it: Throwable) {
+        applyState(
+                ProfileViewState.ProfileError(when (it) {
+                    is InternalException ->
+                        it.msg
+                    is NoCredentialsException ->
+                        return findNavController().navigate(R.id.fragment_login)
+                    is UnknownHostException ->
+                        context.getString(R.string.no_internet_error)
+                    else -> context.getString(R.string.unexpected_error,
                             it.javaClass.simpleName, it.localizedMessage)
                 }))
-            }
     }
+
 
     private fun View.applyState(newState: ProfileViewState) = with(newState) {
         profile_header_content.visibility = headerContentVisibility.visibility()
@@ -129,8 +154,8 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
                     .into(profile_image)
 
                 skillsAdapter.setData(skills)
-                referencesAdapter.setData(references)
 
+                referencesAdapter.setData(references)
                 profile_no_references.visibility = references.isEmpty().visibility()
 
                 profile_summary.text = summary ?: getString(R.string.no_summary)

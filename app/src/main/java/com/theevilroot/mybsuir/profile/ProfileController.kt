@@ -1,12 +1,15 @@
 package com.theevilroot.mybsuir.profile
 
 import com.theevilroot.mybsuir.common.data.InternalException
+import com.theevilroot.mybsuir.common.data.NoCredentialsException
+import com.theevilroot.mybsuir.login.LoginModel
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class ProfileController (
-    val model: ProfileModel
+    val model: ProfileModel,
 ) {
 
     fun updateProfileInfo(): Single<ProfileInfo> =
