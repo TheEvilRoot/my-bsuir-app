@@ -16,6 +16,7 @@ import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.Reference
 import com.theevilroot.mybsuir.common.data.Skill
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.functions.BiFunction
 import kotlinx.android.synthetic.main.f_profile.view.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
@@ -86,24 +87,12 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
         })
 
         applyState(ProfileViewState.ProfileLoading)
-        if (cacheController.hasCredentials())
-            updateProfileInfo()
-        else cacheController.getCachedCredentials()
+        cacheController.preloadCacheAndCall(controller
+                .updateProfileInfo()
+                .observeOn(AndroidSchedulers.mainThread()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap<ProfileInfo?> {
-                    if (it) controller.updateProfileInfo()
-                            .observeOn(AndroidSchedulers.mainThread())
-                    else null
-                }.subscribe({
-                    it?.let { profileUpdateHandler(it) }
-                            ?: findNavController().navigate(R.id.fragment_login)
-                }) { profileUpdateErrorHandler(it) }
-    }
-
-    private fun View.updateProfileInfo() {
-        controller.updateProfileInfo()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ profileUpdateHandler(it) }) { profileUpdateErrorHandler(it) }
+                .subscribe({ profileUpdateHandler(it) }) {
+                    profileUpdateErrorHandler(it) }
     }
 
     private fun View.profileUpdateHandler(it: ProfileInfo) =

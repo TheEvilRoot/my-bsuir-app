@@ -1,6 +1,7 @@
 package com.theevilroot.mybsuir.common.controller
 
 import com.theevilroot.mybsuir.common.CredentialsStore
+import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.login.LoginModel
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -9,6 +10,19 @@ class CacheController (
         val loginModel: LoginModel,
         val store: CredentialsStore
 ) {
+
+    fun <T> preloadCacheAndCall(data: Single<T>): Single<T> =
+            if (hasCredentials()) {
+                data.map { it }
+            } else {
+                getCachedCredentials()
+                        .flatMap { isLoaded ->
+                            if (isLoaded)
+                                data
+                            else Single.create { i -> i.onError(NoCredentialsException()) }
+                        }
+            }
+
     /**
      * Read file from disk
      * Get token from file
