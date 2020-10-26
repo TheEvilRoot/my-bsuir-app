@@ -3,4 +3,8 @@
     <item
         android:id="@+id/fragment_profile"
         android:title="Профиль"/>
+
+    <item
+        android:id="@id/fragment_group"
+        android:title="Группа" />
 </menu>

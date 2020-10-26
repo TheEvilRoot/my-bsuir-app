@@ -8,13 +8,10 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
-import com.theevilroot.mybsuir.common.data.InternalException
-import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.controller.CacheController
-import com.theevilroot.mybsuir.common.data.Reference
-import com.theevilroot.mybsuir.common.data.Skill
+import com.theevilroot.mybsuir.common.data.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.functions.BiFunction
@@ -86,10 +83,14 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
             profile_header_content.referencedIds.forEach { findViewById<View>(it).alpha = 1 - value }
         })
 
+        profileUpdate(true)
+    }
+
+    private fun View.profileUpdate(useCurrentCredentials: Boolean) {
         applyState(ProfileViewState.ProfileLoading)
         cacheController.preloadCacheAndCall(controller
                 .updateProfileInfo()
-                .observeOn(AndroidSchedulers.mainThread()))
+                .observeOn(AndroidSchedulers.mainThread()), useCurrentCredentials)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ profileUpdateHandler(it) }) {
                     profileUpdateErrorHandler(it) }
@@ -99,12 +100,15 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
             applyState(ProfileViewState.ProfileFilled(it))
 
     private fun View.profileUpdateErrorHandler(it: Throwable) {
+        it.printStackTrace()
         applyState(
                 ProfileViewState.ProfileError(when (it) {
                     is InternalException ->
                         it.msg
                     is NoCredentialsException ->
                         return findNavController().navigate(R.id.fragment_login)
+                    is ReAuthRequiredException ->
+                        return profileUpdate(false)
                     is UnknownHostException ->
                         context.getString(R.string.no_internet_error)
                     else -> context.getString(R.string.unexpected_error,
@@ -149,6 +153,10 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
 
                 profile_summary.text = summary ?: getString(R.string.no_summary)
             }
+        }
+
+        if (this is ProfileViewState.ProfileError) {
+            profile_error_message.text = message
         }
     }
 

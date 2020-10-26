@@ -2,10 +2,7 @@ package com.theevilroot.mybsuir.profile
 
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.CredentialsStore
-import com.theevilroot.mybsuir.common.data.InternalException
-import com.theevilroot.mybsuir.common.data.NoCredentialsException
-import com.theevilroot.mybsuir.common.data.PersonalCV
-import com.theevilroot.mybsuir.common.data.PersonalInformation
+import com.theevilroot.mybsuir.common.data.*
 
 class ProfileModel (
     private val api: ApiService,
@@ -21,8 +18,14 @@ class ProfileModel (
         val call = api.personalCV(token).execute()
         if (call.code() == 200) {
             return call.body()?.apply { personalCvCache = this }
-        } else throw InternalException(call.errorBody()?.string()
-            ?: "Ошибка получения данных от сервера")
+        } else {
+            call.errorBody()?.string()?.let {
+                if (it.contains("Session expired") || it.contains("Access is denied"))
+                    throw ReAuthRequiredException()
+            }
+            throw InternalException(call.errorBody()?.string()
+                    ?: "Ошибка получения данных от сервера")
+        }
     }
 
     fun getPersonalInformation(): PersonalInformation? {

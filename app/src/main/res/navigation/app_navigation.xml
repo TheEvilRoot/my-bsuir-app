@@ -14,4 +14,10 @@
         android:name="com.theevilroot.mybsuir.profile.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/f_profile"/>
+    <fragment
+        android:id="@+id/fragment_group"
+        android:name="com.theevilroot.mybsuir.group.GroupFragment"
+        android:label="GroupFragment"
+        tools:layout="@layout/f_group" />
+
 </navigation>

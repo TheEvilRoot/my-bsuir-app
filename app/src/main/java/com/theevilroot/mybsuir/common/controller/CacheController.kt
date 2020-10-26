@@ -11,8 +11,8 @@ class CacheController (
         val store: CredentialsStore
 ) {
 
-    fun <T> preloadCacheAndCall(data: Single<T>): Single<T> =
-            if (hasCredentials()) {
+    fun <T> preloadCacheAndCall(data: Single<T>, checkMemory: Boolean = true): Single<T> =
+            if (checkMemory && hasCredentials()) {
                 data.map { it }
             } else {
                 getCachedCredentials()
