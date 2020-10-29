@@ -34,7 +34,7 @@ class GroupFragment : BaseFragment(R.layout.f_group) {
             override val groupViewVisibility: Boolean = true
             override val errorViewVisibility: Boolean = false
         }
-        class GroupFailedState(val message: String): GroupViewState() {
+        class GroupFailedState(val message: String, val retryHandler: View.() -> Unit): GroupViewState() {
             override val progressVisibility: Boolean = false
             override val groupViewVisibility: Boolean = false
             override val errorViewVisibility: Boolean = true
@@ -83,7 +83,7 @@ class GroupFragment : BaseFragment(R.layout.f_group) {
                         context.getString(R.string.no_internet_error)
                     else -> context.getString(R.string.unexpected_error,
                             it.javaClass.simpleName, it.localizedMessage)
-                }))
+                }) { updateGroup(true) })
     }
 
     private fun View.applyState(newState: GroupViewState) = with(newState) {
@@ -93,6 +93,7 @@ class GroupFragment : BaseFragment(R.layout.f_group) {
 
         if (this is GroupViewState.GroupFailedState) {
             group_error_message.text = message
+            group_retry.setOnClickListener(retryHandler)
         }
 
         if (this is GroupViewState.GroupFilledState) {

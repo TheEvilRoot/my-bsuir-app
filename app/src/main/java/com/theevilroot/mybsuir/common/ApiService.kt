@@ -21,4 +21,7 @@ interface ApiService {
     @GET("portal/groupInfo")
     fun groupInfo(@Header("Cookie") token: String): Call<GroupInfo>
 
+    @GET("portal/markbook")
+    fun markBook(@Header("Cookie") token: String): Call<MarkBook>
+
 }

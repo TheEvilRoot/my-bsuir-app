@@ -40,7 +40,7 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
             override val headerErrorVisibility: Boolean = false
         }
 
-        class ProfileError(val message: String): ProfileViewState() {
+        class ProfileError(val message: String, val retryHandler: View.() -> Unit): ProfileViewState() {
             override val headerContentVisibility: Boolean = false
             override val headerProgressVisibility: Boolean = false
             override val headerCanCollapse: Boolean = false
@@ -114,7 +114,7 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
                         context.getString(R.string.no_internet_error)
                     else -> context.getString(R.string.unexpected_error,
                             it.javaClass.simpleName, it.localizedMessage)
-                }))
+                }) { profileUpdate(true) })
     }
 
 
@@ -158,6 +158,7 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
 
         if (this is ProfileViewState.ProfileError) {
             profile_error_message.text = message
+            profile_refresh.setOnClickListener(retryHandler)
         }
     }
 
