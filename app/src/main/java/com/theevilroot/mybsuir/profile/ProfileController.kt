@@ -12,12 +12,12 @@ class ProfileController (
     val model: ProfileModel,
 ) {
 
-    fun updateProfileInfo(): Single<ProfileInfo> =
+    fun updateProfileInfo(forceUpdate: Boolean): Single<ProfileInfo> =
         Single.create<ProfileInfo> {
-            val personalCv = model.getPersonalCV()
-                ?: throw InternalException("Невозможно получить данные профиля")
-            val personalInformation = model.getPersonalInformation()
-                ?: throw InternalException("Невозможно получить данные профиля")
+            val personalCv = model.getPersonalCV(allowCache = !forceUpdate)
+                ?: return@create it.onError(InternalException("Невозможно получить данные профиля"))
+            val personalInformation = model.getPersonalInformation(allowCache = !forceUpdate)
+                ?: return@create it.onError(InternalException("Невозможно получить данные профиля"))
 
             val profileInfo = ProfileInfo(
                 personalInformation.name,

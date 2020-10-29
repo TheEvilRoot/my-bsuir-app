@@ -2,6 +2,7 @@ package com.theevilroot.mybsuir.common
 
 import android.app.Application
 import com.theevilroot.mybsuir.common.controller.CacheController
+import com.theevilroot.mybsuir.group.GroupModel
 import com.theevilroot.mybsuir.login.LoginModel
 import com.theevilroot.mybsuir.profile.ProfileModel
 import okhttp3.OkHttpClient
@@ -29,6 +30,7 @@ class App : Application(), KodeinAware {
         /* Layer 1 */
         bind<LoginModel>() with singleton { LoginModel(applicationContext, instance()) }
         bind<ProfileModel>() with singleton { ProfileModel(instance(), instance()) }
+        bind<GroupModel>() with singleton { GroupModel(instance(), instance()) }
 
         /* Layout 2 */
         bind<CacheController>() with singleton { CacheController(instance(), instance()) }

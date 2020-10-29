@@ -12,6 +12,7 @@ import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.*
+import com.theevilroot.mybsuir.common.visibility
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.functions.BiFunction
@@ -89,7 +90,7 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
     private fun View.profileUpdate(useCurrentCredentials: Boolean) {
         applyState(ProfileViewState.ProfileLoading)
         cacheController.preloadCacheAndCall(controller
-                .updateProfileInfo()
+                .updateProfileInfo(false)
                 .observeOn(AndroidSchedulers.mainThread()), useCurrentCredentials)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ profileUpdateHandler(it) }) {

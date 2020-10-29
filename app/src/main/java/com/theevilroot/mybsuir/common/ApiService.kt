@@ -18,4 +18,7 @@ interface ApiService {
     @GET("portal/personalCV")
     fun personalCV(@Header("Cookie") token: String): Call<PersonalCV>
 
+    @GET("portal/groupInfo")
+    fun groupInfo(@Header("Cookie") token: String): Call<GroupInfo>
+
 }

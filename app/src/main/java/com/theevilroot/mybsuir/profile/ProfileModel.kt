@@ -1,40 +1,22 @@
 package com.theevilroot.mybsuir.profile
 
+import com.theevilroot.mybsuir.common.ApiModel
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.data.*
 
-class ProfileModel (
-    private val api: ApiService,
-    private val store: CredentialsStore
-) {
+class ProfileModel(api: ApiService, store: CredentialsStore): ApiModel(api, store) {
 
     private var personalCvCache: PersonalCV? = null
     private var personalInformationCache: PersonalInformation? = null
 
-    fun getPersonalCV(): PersonalCV? {
-        val token = store.getToken()
-            ?: throw NoCredentialsException()
-        val call = api.personalCV(token).execute()
-        if (call.code() == 200) {
-            return call.body()?.apply { personalCvCache = this }
-        } else {
-            call.errorBody()?.string()?.let {
-                if (it.contains("Session expired") || it.contains("Access is denied"))
-                    throw ReAuthRequiredException()
-            }
-            throw InternalException(call.errorBody()?.string()
-                    ?: "Ошибка получения данных от сервера")
-        }
+    fun getPersonalCV(allowCache: Boolean): PersonalCV? {
+        return apiCall(ApiService::personalCV, if (allowCache) personalCvCache else null)
+                ?.apply { personalCvCache = this }
     }
 
-    fun getPersonalInformation(): PersonalInformation? {
-        val token = store.getToken()
-            ?: throw NoCredentialsException()
-        val call = api.personalInformation(token).execute()
-        if (call.code() == 200) {
-            return call.body()?.apply { personalInformationCache = this }
-        } else throw InternalException(call.errorBody()?.string()
-            ?: "Ошибка получения данных от сервера")
+    fun getPersonalInformation(allowCache: Boolean): PersonalInformation? {
+        return apiCall(ApiService::personalInformation, if (allowCache) personalInformationCache else null)
+                ?.apply { personalInformationCache = this }
     }
 }
