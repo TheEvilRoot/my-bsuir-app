@@ -3,13 +3,10 @@ package com.theevilroot.mybsuir.common.adapters
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-open class SimpleViewHolder<T>(
-    private val binding: View.(T) -> Unit,
+abstract class SimpleViewHolder<T>(
     itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(data: T) = with(itemView) {
-        binding(data)
-    }
+    abstract fun bind(data: T)
 
 }

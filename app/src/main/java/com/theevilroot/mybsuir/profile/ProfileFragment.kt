@@ -7,20 +7,18 @@ import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.theevilroot.mybsuir.R
+import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
-import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.common.visibility
+import com.theevilroot.mybsuir.profile.holders.ReferenceViewHolder
+import com.theevilroot.mybsuir.profile.holders.SkillsViewHolder
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.functions.BiFunction
 import kotlinx.android.synthetic.main.f_profile.view.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
 import kotlinx.android.synthetic.main.i_profile_header.view.*
-import kotlinx.android.synthetic.main.i_reference.view.*
-import kotlinx.android.synthetic.main.i_skill.view.*
 import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 import kotlin.math.abs
@@ -60,11 +58,8 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
 
     private val controller by lazy { ProfileController(model) }
 
-    private val skillsAdapter by lazy { SimpleAdapter<Skill>(R.layout.i_skill) { value.text = it.name } }
-    private val referencesAdapter by lazy { SimpleAdapter<Reference>(R.layout.i_reference) {
-        url.text = it.reference
-        title.text = it.name
-    } }
+    private val skillsAdapter by lazy { SimpleAdapter(R.layout.i_skill, ::SkillsViewHolder) }
+    private val referencesAdapter by lazy { SimpleAdapter(R.layout.i_reference, ::ReferenceViewHolder) }
 
     override fun View.onView() {
         with(skills_view) {
@@ -114,7 +109,7 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
                         context.getString(R.string.no_internet_error)
                     else -> context.getString(R.string.unexpected_error,
                             it.javaClass.simpleName, it.localizedMessage)
-                }) { profileUpdate(true) })
+                }) { view?.profileUpdate(true) })
     }
 
 

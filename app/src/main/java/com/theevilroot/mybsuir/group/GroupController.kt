@@ -20,20 +20,8 @@ class GroupController (
                 val leader = groupInfo.members.firstOrNull { m -> m.position == "Староста группы" }
                 val group = Group(
                         groupInfo.numberGroup,
-                        supervisor?.let { m -> SpecialGroupMember(
-                                m.position,
-                                m.fullName,
-                                m.phone,
-                                m.email,
-                                "https://iis.bsuir.by/assets/default-photo.gif"
-                        ) },
-                        leader?.let { m -> SpecialGroupMember(
-                                m.position,
-                                m.fullName,
-                                m.phone,
-                                m.email,
-                                "https://iis.bsuir.by/assets/default-photo.gif"
-                        ) },
+                        supervisor?.let(::SpecialGroupMember),
+                        leader?.let(::SpecialGroupMember),
                         groupInfo.members
                                 .filterNot(supervisorFilter)
                                 .sortedBy(GroupMember::fullName)

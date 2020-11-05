@@ -5,20 +5,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.theevilroot.mybsuir.R
-import com.theevilroot.mybsuir.common.adapters.SimpleViewHolder
-import com.theevilroot.mybsuir.common.data.Skill
+import com.theevilroot.mybsuir.common.data.Semester
+import com.theevilroot.mybsuir.markbook.semesters.SemestersAdapter
 import kotlin.math.max
+import kotlin.reflect.KFunction3
 
-open class SimpleAdapter<T> (
+open class SimpleAdapter<T, H: SimpleViewHolder<T>>(
     @LayoutRes
     private val layout: Int,
-    private val binding: View.(T) -> Unit
+    private val holderFactory: (View) -> H
 ) : RecyclerView.Adapter<SimpleViewHolder<T>>() {
 
     private var list: List<T> = listOf()
 
-    fun setData(items: List<T>) {
+    open fun setData(items: List<T>) {
         list = items
         notifyDataSetChanged()
     }
@@ -26,7 +26,7 @@ open class SimpleAdapter<T> (
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder<T> {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(layout, parent, false)
-        return SimpleViewHolder(binding, view)
+        return holderFactory(view)
     }
 
     override fun getItemCount(): Int {

@@ -16,4 +16,11 @@ class SpecialGroupMember(
         phone: String,
         email: String,
         val photoUrl: String?
-): GroupMember(position, fullName, phone, email)
+): GroupMember(position, fullName, phone, email) {
+        constructor(m: GroupMember):
+                this(m.position,
+                        m.fullName,
+                        m.phone,
+                        m.email,
+                "https://iis.bsuir.by/assets/default-photo.gif")
+}

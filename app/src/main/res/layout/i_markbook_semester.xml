@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/semester_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="3 семестр"/>
+
+    <TextView
+        android:id="@+id/semester_average_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/semester_title"
+        tools:text="Средний балл: 6.10" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/marks_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/semester_average_mark"
+        tools:listitem="@layout/i_mark"/>
+
+</RelativeLayout>

@@ -3,6 +3,7 @@ package com.theevilroot.mybsuir.markbook
 import com.theevilroot.mybsuir.common.data.InternalException
 import com.theevilroot.mybsuir.common.data.MarkBook
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MarkBookController (
         val model: MarkBookModel
@@ -14,6 +15,6 @@ class MarkBookController (
                         ?: return@create it.onError(InternalException("Невозможно получить данные зачетки"))
 
                 it.onSuccess(markBook)
-            }
+            }.subscribeOn(Schedulers.io())
 
 }

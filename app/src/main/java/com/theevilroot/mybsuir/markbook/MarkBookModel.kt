@@ -17,5 +17,4 @@ class MarkBookModel (
                 ?.apply { markBookCache = this }
     }
 
-
 }
