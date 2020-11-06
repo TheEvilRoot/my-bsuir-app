@@ -10,7 +10,7 @@ data class Mark(
         val hours: String,
         val mark: String,
         val date: String,
-        val teacher: String,
+        val teacher: String?,
         val commonMark: Double,
         val commonRetakes: Double,
         val retakesCount: Int

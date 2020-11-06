@@ -1,24 +1,19 @@
 package com.theevilroot.mybsuir.markbook.semesters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.theevilroot.mybsuir.R
-import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
-import com.theevilroot.mybsuir.common.data.Mark
 import com.theevilroot.mybsuir.common.data.Semester
-import com.theevilroot.mybsuir.markbook.marks.MarkViewHolder
-import kotlinx.android.synthetic.main.i_markbook_semester.view.*
+import com.theevilroot.mybsuir.markbook.marks.MarksAdapter
 
 class SemestersAdapter : RecyclerView.Adapter<SemesterViewHolder>() {
 
     private var data: List<Semester> = emptyList()
-    private val markAdapters = mutableListOf<SimpleAdapter<Mark, MarkViewHolder>>()
+    private val markAdapters = mutableListOf<MarksAdapter>()
 
-    private fun newMarkAdapter(): SimpleAdapter<Mark, MarkViewHolder> =
-            SimpleAdapter(R.layout.i_mark, ::MarkViewHolder)
+    private fun newMarkAdapter(): MarksAdapter =
+            MarksAdapter()
 
     fun setData(items: List<Semester>) {
         if (markAdapters.size < items.size) {

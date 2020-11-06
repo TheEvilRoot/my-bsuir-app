@@ -3,6 +3,8 @@ package com.theevilroot.mybsuir.markbook
 import android.view.View
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.SnapHelper
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.controller.CacheController
@@ -49,9 +51,11 @@ class MarkBookFragment : BaseFragment(R.layout.f_markbook) {
     private val semestersAdapter by lazy { SemestersAdapter() }
 
     override fun View.onView() {
+        val snapHelper = PagerSnapHelper()
         with(mark_book_view) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = semestersAdapter
+            snapHelper.attachToRecyclerView(this)
         }
 
         updateMarkBook(true)

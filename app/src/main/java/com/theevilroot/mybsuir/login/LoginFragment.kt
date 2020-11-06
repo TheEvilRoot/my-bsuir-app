@@ -125,9 +125,9 @@ class LoginFragment : BaseFragment(R.layout.f_login) {
     }
 
     private fun hideKeyboard() {
-        activity?.let {
-            val imm = it.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-            it.currentFocus?.let {
+        activity?.let { activity ->
+            val imm = activity.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+            activity.currentFocus?.let {
                 imm.hideSoftInputFromWindow(it.windowToken, 0)
             }
         }
