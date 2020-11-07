@@ -5,16 +5,15 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.common.visibility
 import com.theevilroot.mybsuir.markbook.semesters.SemestersAdapter
+import com.theevilroot.mybsuir.markbook.semesters.SemestersScrollDelegate
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.f_markbook.view.*
-import kotlinx.android.synthetic.main.i_reference.view.*
 import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 import kotlin.math.max
@@ -56,51 +55,22 @@ class MarkBookFragment : BaseFragment(R.layout.f_markbook) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = semestersAdapter
             snapHelper.attachToRecyclerView(this)
-            addOnScrollListener(object: RecyclerView.OnScrollListener() {
-
-                var extent = 0
-                var totalOffset = 0
-                var index = -1
-
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (extent == 0)
-                        extent = recyclerView.computeHorizontalScrollExtent()
-                    totalOffset += dx
-
-                    val localOffset = totalOffset % extent
-                    if (localOffset > 0) {
-                        val percent = localOffset.toFloat() / extent.toFloat()
-                        val alpha = if (percent < 0.5) {
-                            val idx = totalOffset / extent
-                            if (idx != index) {
-                                index = idx
-                                onItemIndexChanged(idx)
-                            }
-                            1 - (2 * percent)
-                        } else {
-                            val idx = (totalOffset / extent) + 1
-                            if (idx != index) {
-                                index = idx
-                                onItemIndexChanged(idx)
-                            }
-                            (2 * (percent - 0.5)).toFloat()
-                        }
-                        this@onView.markbook_title.alpha = alpha
-                        this@onView.markbook_subtitle.alpha = alpha
-                        this@onView.markbook_average_mark.alpha = alpha
-                    }
-                }
-
-                private fun onItemIndexChanged(index: Int) {
-                    semestersAdapter.data.getOrNull(index)?.let {
-                        this@onView.updateSemesterHeader(it)
-                    }
-                }
-            })
+            addOnScrollListener(SemestersScrollDelegate(::onItemIndexChanged, ::onAlphaChanged))
         }
 
         updateMarkBook(true)
+    }
+
+    private fun onItemIndexChanged(index: Int) {
+        semestersAdapter.data.getOrNull(index)?.let {
+            view?.updateSemesterHeader(it)
+        }
+    }
+
+    private fun onAlphaChanged(alpha: Float) = view?.run {
+        markbook_title.alpha = alpha
+        markbook_subtitle.alpha = alpha
+        markbook_average_mark.alpha = alpha
     }
 
     private fun View.updateMarkBook(useCurrentCredentials: Boolean) {
