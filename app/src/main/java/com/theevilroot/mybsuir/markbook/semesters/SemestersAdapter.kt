@@ -9,13 +9,13 @@ import com.theevilroot.mybsuir.markbook.marks.MarksAdapter
 
 class SemestersAdapter : RecyclerView.Adapter<SemesterViewHolder>() {
 
-    private var data: List<Semester> = emptyList()
+    var data: List<Semester> = emptyList()
     private val markAdapters = mutableListOf<MarksAdapter>()
 
     private fun newMarkAdapter(): MarksAdapter =
             MarksAdapter()
 
-    fun setData(items: List<Semester>) {
+    fun setSemesters(items: List<Semester>) {
         if (markAdapters.size < items.size) {
             markAdapters.addAll((0 until (items.size - markAdapters.size))
                     .map { newMarkAdapter() })
