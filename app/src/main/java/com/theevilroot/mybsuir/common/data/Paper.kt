@@ -12,11 +12,11 @@ data class Paper(
     private val _status: Int,
     val rejectionReason: String?
 ) {
-    enum class Status(val value: Int) {
-        PRINTED(1),
-        NOP(-1) // TODO: reverse values
+    enum class Status(val value: Int, val description: String) {
+        PRINTED(1, "Напечатана"),
+        NOP(-1, "NOP") // TODO: reverse values
     }
 
-    val status: Status =
+    fun status(): Status =
         Status.values().firstOrNull { it.value == _status } ?: Status.NOP
 }

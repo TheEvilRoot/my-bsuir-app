@@ -5,6 +5,7 @@ import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.group.GroupModel
 import com.theevilroot.mybsuir.login.LoginModel
 import com.theevilroot.mybsuir.markbook.MarkBookModel
+import com.theevilroot.mybsuir.papers.PapersModel
 import com.theevilroot.mybsuir.profile.ProfileModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,6 +34,7 @@ class App : Application(), KodeinAware {
         bind<ProfileModel>() with singleton { ProfileModel(instance(), instance()) }
         bind<GroupModel>() with singleton { GroupModel(instance(), instance()) }
         bind<MarkBookModel>() with singleton { MarkBookModel(instance(), instance()) }
+        bind<PapersModel>() with singleton { PapersModel(instance(), instance()) }
 
         /* Layout 2 */
         bind<CacheController>() with singleton { CacheController(instance(), instance()) }
