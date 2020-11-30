@@ -1,8 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_papers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/b_filled_button"
+            android:paddingHorizontal="8dp"
+            android:text="Справки..."
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/button_exam_sheets"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="4dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_exam_sheets"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/b_filled_button"
+            android:paddingHorizontal="8dp"
+            android:text="Ведомостички..."
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_papers"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="4dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_settings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/b_outlined_button"
+            android:paddingHorizontal="8dp"
+            android:text="Настройки..."
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_exam_sheets"
+            android:layout_marginTop="8dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout
         android:id="@+id/layout_skills"
@@ -10,7 +57,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        android:layout_below="@id/layout_buttons">
 
         <TextView
             android:id="@+id/skills_title"

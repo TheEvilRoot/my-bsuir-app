@@ -25,4 +25,9 @@
         android:label="MarkBookFragment"
         tools:layout="@layout/f_markbook"/>
 
+    <fragment android:id="@+id/fragment_papers"
+        android:name="com.theevilroot.mybsuir.papers.PapersFragment"
+        android:label="PapersFragment"
+        tools:layout="@layout/f_papers" />
+
 </navigation>

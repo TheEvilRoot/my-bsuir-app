@@ -30,12 +30,14 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
         abstract val headerProgressVisibility: Boolean
         abstract val headerErrorVisibility: Boolean
         abstract val headerCanCollapse: Boolean
+        abstract val buttonsAvailable: Boolean
 
         class ProfileFilled(val profileInfo: ProfileInfo): ProfileViewState() {
             override val headerContentVisibility: Boolean = true
             override val headerProgressVisibility: Boolean = false
             override val headerCanCollapse: Boolean = true
             override val headerErrorVisibility: Boolean = false
+            override val buttonsAvailable: Boolean = true
         }
 
         class ProfileError(val message: String, val retryHandler: View.() -> Unit): ProfileViewState() {
@@ -43,6 +45,7 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
             override val headerProgressVisibility: Boolean = false
             override val headerCanCollapse: Boolean = false
             override val headerErrorVisibility: Boolean = true
+            override val buttonsAvailable: Boolean = false
         }
 
         object ProfileLoading: ProfileViewState() {
@@ -50,6 +53,7 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
             override val headerProgressVisibility: Boolean = true
             override val headerCanCollapse: Boolean = false
             override val headerErrorVisibility: Boolean = false
+            override val buttonsAvailable: Boolean = false
         }
     }
 
@@ -78,6 +82,10 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
             profile_title_name.alpha = value
             profile_header_content.referencedIds.forEach { findViewById<View>(it).alpha = 1 - value }
         })
+
+        button_papers.setOnClickListener {
+            findNavController().navigate(R.id.fragment_papers)
+        }
 
         profileUpdate(true)
     }
@@ -118,6 +126,9 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
         profile_title_name.visibility = headerContentVisibility.visibility()
         profile_progress.visibility = headerProgressVisibility.visibility()
         profile_error.visibility = headerErrorVisibility.visibility()
+
+        arrayOf(button_papers, button_exam_sheets, button_settings)
+            .forEach { it.isEnabled = buttonsAvailable }
 
         val params = profile_collapsing_toolbar.layoutParams as AppBarLayout.LayoutParams
         if (headerCanCollapse) {

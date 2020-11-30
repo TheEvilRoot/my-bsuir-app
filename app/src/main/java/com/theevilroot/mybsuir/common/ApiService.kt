@@ -24,4 +24,7 @@ interface ApiService {
     @GET("portal/markbook")
     fun markBook(@Header("Cookie") token: String): Call<MarkBook>
 
+    @GET("portal/certificate")
+    fun certificate(@Header("Cookie") token: String): Call<List<Paper>>
+
 }
