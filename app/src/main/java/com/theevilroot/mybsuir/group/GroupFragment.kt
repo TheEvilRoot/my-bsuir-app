@@ -19,7 +19,7 @@ import java.net.UnknownHostException
 
 class GroupFragment : BaseFragment(R.layout.f_group) {
 
-    sealed class GroupViewState {
+    private  sealed class GroupViewState {
         abstract val progressVisibility: Boolean
         abstract val groupViewVisibility: Boolean
         abstract val errorViewVisibility: Boolean

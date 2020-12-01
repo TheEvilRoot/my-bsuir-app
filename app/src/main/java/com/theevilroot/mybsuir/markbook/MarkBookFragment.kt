@@ -20,7 +20,7 @@ import kotlin.math.max
 
 class MarkBookFragment : BaseFragment(R.layout.f_markbook) {
 
-    sealed class MarkBookViewState {
+    private sealed class MarkBookViewState {
         abstract val progressVisibility: Boolean
         abstract val markBookVisibility: Boolean
         abstract val errorViewVisibility: Boolean

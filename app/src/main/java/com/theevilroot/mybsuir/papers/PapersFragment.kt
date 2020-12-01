@@ -21,7 +21,7 @@ import kotlin.math.abs
 
 class PapersFragment : BaseFragment(R.layout.f_papers) {
 
-    sealed class PapersViewState {
+    private sealed class PapersViewState {
 
         abstract val loadingVisibility: Boolean
 
@@ -94,7 +94,7 @@ class PapersFragment : BaseFragment(R.layout.f_papers) {
                 }) { view?.updatePapers(true) })
     }
 
-    fun View.applyState(newState: PapersViewState) = with(newState) {
+    private fun View.applyState(newState: PapersViewState) = with(newState) {
         papers_refresh.isRefreshing = loadingVisibility
 
         if (this is PapersViewState.PapersFilled) {

@@ -34,7 +34,7 @@ import java.net.UnknownHostException
  */
 class LoginFragment : BaseFragment(R.layout.f_login) {
 
-    sealed class LoginViewState {
+    private sealed class LoginViewState {
         abstract val contentVisibility: Boolean
         abstract val errorVisibility: Boolean
         abstract val progressVisibility: Boolean

@@ -25,7 +25,7 @@ import kotlin.math.abs
 
 class ProfileFragment : BaseFragment(R.layout.f_profile) {
 
-    sealed class ProfileViewState {
+    private sealed class ProfileViewState {
         abstract val headerContentVisibility: Boolean
         abstract val headerProgressVisibility: Boolean
         abstract val headerErrorVisibility: Boolean
