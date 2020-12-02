@@ -27,4 +27,7 @@ interface ApiService {
     @GET("portal/certificate")
     fun certificate(@Header("Cookie") token: String): Call<List<Paper>>
 
+    @GET("portal/certificate/places")
+    fun places(@Header("Cookie") token: String): Call<List<PaperPlaceCategory>>
+
 }
