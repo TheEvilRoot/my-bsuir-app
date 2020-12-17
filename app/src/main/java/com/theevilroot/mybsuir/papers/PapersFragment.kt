@@ -19,9 +19,9 @@ import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 import kotlin.math.abs
 
-class PapersFragment : BaseFragment(R.layout.f_papers) {
+class PapersFragment : BaseFragment<PapersFragment.PapersViewState>(R.layout.f_papers) {
 
-    private sealed class PapersViewState {
+    sealed class PapersViewState {
 
         abstract val loadingVisibility: Boolean
 
@@ -94,7 +94,7 @@ class PapersFragment : BaseFragment(R.layout.f_papers) {
                 }) { view?.updatePapers(true) })
     }
 
-    private fun View.applyState(newState: PapersViewState) = with(newState) {
+    override fun View.applyState(newState: PapersViewState) = with(newState) {
         papers_refresh.isRefreshing = loadingVisibility
 
         if (this is PapersViewState.PapersFilled) {

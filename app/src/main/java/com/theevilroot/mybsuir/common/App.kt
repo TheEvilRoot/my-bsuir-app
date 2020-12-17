@@ -26,7 +26,7 @@ class App : Application(), KodeinAware {
         import(androidXModule(this@App))
 
         /* Layer 0 */
-        bind<ApiService>() with singleton { createService<ApiService>(apiBaseUrl) }
+        bind<ApiService>() with singleton { createApiService() }
         bind<CredentialsStore>() with singleton { CredentialsStore() }
 
         /* Layer 1 */
@@ -46,12 +46,7 @@ class App : Application(), KodeinAware {
                 level = HttpLoggingInterceptor.Level.BODY
             }).build()
 
-    private inline fun <reified T> createService(baseUrl: String): T =
-        Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(createHttpClient())
-            .build()
-            .create(T::class.java)
+    private fun createApiService(): ApiService =
+            ServiceFactory.createService(apiBaseUrl, createHttpClient())
 
 }

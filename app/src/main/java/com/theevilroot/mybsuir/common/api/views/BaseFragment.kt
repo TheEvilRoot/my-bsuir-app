@@ -10,7 +10,7 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 
-open class BaseFragment (
+abstract class BaseFragment<State> (
     @LayoutRes
     val layoutRes: Int
 ) : Fragment(), KodeinAware {
@@ -29,4 +29,6 @@ open class BaseFragment (
     }
 
     open fun View.onView() { }
+
+    protected abstract fun View.applyState(newState: State)
 }

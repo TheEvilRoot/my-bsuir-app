@@ -5,7 +5,7 @@ import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.common.data.ReAuthRequiredException
 import retrofit2.Call
 
-open class ApiModel (
+open class  ApiModel (
         val api: ApiService,
         val store: CredentialsStore
 ) {

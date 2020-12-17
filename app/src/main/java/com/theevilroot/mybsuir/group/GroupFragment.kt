@@ -17,9 +17,9 @@ import kotlinx.android.synthetic.main.f_group.view.*
 import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 
-class GroupFragment : BaseFragment(R.layout.f_group) {
+class GroupFragment : BaseFragment<GroupFragment.GroupViewState>(R.layout.f_group) {
 
-    private  sealed class GroupViewState {
+     sealed class GroupViewState {
         abstract val progressVisibility: Boolean
         abstract val groupViewVisibility: Boolean
         abstract val errorViewVisibility: Boolean
@@ -86,7 +86,7 @@ class GroupFragment : BaseFragment(R.layout.f_group) {
                 }) { updateGroup(true) })
     }
 
-    private fun View.applyState(newState: GroupViewState) = with(newState) {
+    override fun View.applyState(newState: GroupViewState) = with(newState) {
         group_view.visibility = groupViewVisibility.visibility()
         group_progress.visibility = progressVisibility.visibility()
         group_error.visibility = errorViewVisibility.visibility()

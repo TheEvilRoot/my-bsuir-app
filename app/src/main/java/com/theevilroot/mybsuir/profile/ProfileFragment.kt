@@ -23,9 +23,9 @@ import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 import kotlin.math.abs
 
-class ProfileFragment : BaseFragment(R.layout.f_profile) {
+class ProfileFragment : BaseFragment<ProfileFragment.ProfileViewState>(R.layout.f_profile) {
 
-    private sealed class ProfileViewState {
+    sealed class ProfileViewState {
         abstract val headerContentVisibility: Boolean
         abstract val headerProgressVisibility: Boolean
         abstract val headerErrorVisibility: Boolean
@@ -121,7 +121,7 @@ class ProfileFragment : BaseFragment(R.layout.f_profile) {
     }
 
 
-    private fun View.applyState(newState: ProfileViewState) = with(newState) {
+    override fun View.applyState(newState: ProfileViewState) = with(newState) {
         profile_header_content.visibility = headerContentVisibility.visibility()
         profile_title_name.visibility = headerContentVisibility.visibility()
         profile_progress.visibility = headerProgressVisibility.visibility()

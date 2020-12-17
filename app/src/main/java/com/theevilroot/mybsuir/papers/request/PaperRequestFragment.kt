@@ -7,9 +7,9 @@ import com.theevilroot.mybsuir.papers.PapersController
 import com.theevilroot.mybsuir.papers.PapersModel
 import org.kodein.di.generic.instance
 
-class PaperRequestFragment : BaseFragment(R.layout.f_paper_request) {
+class PaperRequestFragment : BaseFragment<PaperRequestFragment.PaperRequestViewState>(R.layout.f_paper_request) {
 
-    private sealed class PaperRequestViewState {
+    sealed class PaperRequestViewState {
 
         abstract val loadingVisibility: Boolean
 
@@ -24,5 +24,9 @@ class PaperRequestFragment : BaseFragment(R.layout.f_paper_request) {
 
     private val model by instance<PapersModel>()
     private val controller by lazy { PapersController(model) }
+
+    override fun View.applyState(newState: PaperRequestViewState) = with(newState) {
+
+    }
 
 }

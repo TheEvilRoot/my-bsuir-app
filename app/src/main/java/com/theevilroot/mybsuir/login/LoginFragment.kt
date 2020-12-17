@@ -32,9 +32,9 @@ import java.net.UnknownHostException
  *    Error   : shown
  *    Progress: gone
  */
-class LoginFragment : BaseFragment(R.layout.f_login) {
+class LoginFragment : BaseFragment<LoginFragment.LoginViewState>(R.layout.f_login) {
 
-    private sealed class LoginViewState {
+    sealed class LoginViewState {
         abstract val contentVisibility: Boolean
         abstract val errorVisibility: Boolean
         abstract val progressVisibility: Boolean
@@ -112,7 +112,7 @@ class LoginFragment : BaseFragment(R.layout.f_login) {
         }
     }
 
-    private fun View.applyState(newState: LoginViewState) = with(newState) {
+    override fun View.applyState(newState: LoginViewState) = with(newState) {
         login_content.visibility = newState.contentVisibility.visibility()
         login_loading.visibility = newState.progressVisibility.visibility()
         login_error.visibility = newState.errorVisibility.visibility()

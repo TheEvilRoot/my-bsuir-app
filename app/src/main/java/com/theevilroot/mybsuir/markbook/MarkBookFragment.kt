@@ -18,9 +18,9 @@ import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 import kotlin.math.max
 
-class MarkBookFragment : BaseFragment(R.layout.f_markbook) {
+class MarkBookFragment : BaseFragment<MarkBookFragment.MarkBookViewState>(R.layout.f_markbook) {
 
-    private sealed class MarkBookViewState {
+    sealed class MarkBookViewState {
         abstract val progressVisibility: Boolean
         abstract val markBookVisibility: Boolean
         abstract val errorViewVisibility: Boolean
@@ -108,7 +108,7 @@ class MarkBookFragment : BaseFragment(R.layout.f_markbook) {
         markbook_average_mark.text = String.format("%.2f", item.averageMark)
     }
 
-    private fun View.applyState(newState: MarkBookViewState) = with(newState) {
+    override fun View.applyState(newState: MarkBookViewState) = with(newState) {
         mark_book_view.visibility = markBookVisibility.visibility()
         markbook_average_mark_layout.visibility = markBookVisibility.visibility()
         markbook_subtitle.visibility = markBookVisibility.visibility()
