@@ -5,6 +5,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
+import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.InternalException
 import com.theevilroot.mybsuir.common.data.NoCredentialsException
@@ -13,11 +14,12 @@ import com.theevilroot.mybsuir.common.visibility
 import com.theevilroot.mybsuir.group.data.Group
 import com.theevilroot.mybsuir.group.members.GroupMembersAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_group.view.*
 import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 
-class GroupFragment : BaseFragment<GroupFragment.GroupViewState>(R.layout.f_group) {
+class GroupFragment : ModelDataFragment<GroupFragment.GroupViewState, Group>(R.layout.f_group) {
 
      sealed class GroupViewState {
         abstract val progressVisibility: Boolean
@@ -42,7 +44,6 @@ class GroupFragment : BaseFragment<GroupFragment.GroupViewState>(R.layout.f_grou
     }
 
     private val groupModel: GroupModel by instance()
-    private val cacheController: CacheController by instance()
 
     private val controller by lazy { GroupController(groupModel) }
     private val groupAdapter by lazy { GroupMembersAdapter() }
@@ -53,38 +54,20 @@ class GroupFragment : BaseFragment<GroupFragment.GroupViewState>(R.layout.f_grou
             layoutManager = LinearLayoutManager(context)
         }
 
-        updateGroup(true)
+        updateData(true)
     }
 
-    private fun View.updateGroup(useCurrentCredentials: Boolean) {
-        applyState(GroupViewState.GroupLoadingState)
-        cacheController.preloadCacheAndCall(controller
-                .updateGroupInfo(false)
-                .observeOn(AndroidSchedulers.mainThread()), useCurrentCredentials)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ groupUpdateHandler(it) }) {
-                    groupUpdateErrorHandler(it) }
-    }
+    override fun getLoadingState(): GroupViewState =
+            GroupViewState.GroupLoadingState
 
-    private fun View.groupUpdateHandler(it: Group) =
-            applyState(GroupViewState.GroupFilledState(it))
+    override fun getFilledState(it: Group): GroupViewState =
+            GroupViewState.GroupFilledState(it)
 
-    private fun View.groupUpdateErrorHandler(it: Throwable) {
-        it.printStackTrace()
-        applyState(
-                GroupViewState.GroupFailedState(when (it) {
-                    is InternalException ->
-                        it.msg
-                    is NoCredentialsException ->
-                        return findNavController().navigate(R.id.fragment_login)
-                    is ReAuthRequiredException ->
-                        return updateGroup(false)
-                    is UnknownHostException ->
-                        context.getString(R.string.no_internet_error)
-                    else -> context.getString(R.string.unexpected_error,
-                            it.javaClass.simpleName, it.localizedMessage)
-                }) { updateGroup(true) })
-    }
+    override fun getErrorState(msg: String, retryAction: View.() -> Unit): GroupViewState =
+            GroupViewState.GroupFailedState(msg, retryAction)
+
+    override fun getDataUpdate(): Single<Group> =
+            controller.updateGroupInfo(false)
 
     override fun View.applyState(newState: GroupViewState) = with(newState) {
         group_view.visibility = groupViewVisibility.visibility()

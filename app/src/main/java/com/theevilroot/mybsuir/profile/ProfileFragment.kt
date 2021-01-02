@@ -9,6 +9,7 @@ import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
+import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.*
@@ -16,6 +17,7 @@ import com.theevilroot.mybsuir.common.visibility
 import com.theevilroot.mybsuir.profile.holders.ReferenceViewHolder
 import com.theevilroot.mybsuir.profile.holders.SkillsViewHolder
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_profile.view.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
 import kotlinx.android.synthetic.main.i_profile_header.view.*
@@ -23,7 +25,7 @@ import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 import kotlin.math.abs
 
-class ProfileFragment : BaseFragment<ProfileFragment.ProfileViewState>(R.layout.f_profile) {
+class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, ProfileInfo>(R.layout.f_profile) {
 
     sealed class ProfileViewState {
         abstract val headerContentVisibility: Boolean
@@ -58,7 +60,6 @@ class ProfileFragment : BaseFragment<ProfileFragment.ProfileViewState>(R.layout.
     }
 
     private val model: ProfileModel by instance()
-    private val cacheController: CacheController by instance()
 
     private val controller by lazy { ProfileController(model) }
 
@@ -87,39 +88,20 @@ class ProfileFragment : BaseFragment<ProfileFragment.ProfileViewState>(R.layout.
             findNavController().navigate(R.id.fragment_papers)
         }
 
-        profileUpdate(true)
+        updateData(true)
     }
 
-    private fun View.profileUpdate(useCurrentCredentials: Boolean) {
-        applyState(ProfileViewState.ProfileLoading)
-        cacheController.preloadCacheAndCall(controller
-                .updateProfileInfo(false)
-                .observeOn(AndroidSchedulers.mainThread()), useCurrentCredentials)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ profileUpdateHandler(it) }) {
-                    profileUpdateErrorHandler(it) }
-    }
+    override fun getDataUpdate(): Single<ProfileInfo> =
+            controller.updateProfileInfo(false)
 
-    private fun View.profileUpdateHandler(it: ProfileInfo) =
-            applyState(ProfileViewState.ProfileFilled(it))
+    override fun getLoadingState(): ProfileViewState =
+            ProfileViewState.ProfileLoading
 
-    private fun View.profileUpdateErrorHandler(it: Throwable) {
-        it.printStackTrace()
-        applyState(
-                ProfileViewState.ProfileError(when (it) {
-                    is InternalException ->
-                        it.msg
-                    is NoCredentialsException ->
-                        return findNavController().navigate(R.id.fragment_login)
-                    is ReAuthRequiredException ->
-                        return profileUpdate(false)
-                    is UnknownHostException ->
-                        context.getString(R.string.no_internet_error)
-                    else -> context.getString(R.string.unexpected_error,
-                            it.javaClass.simpleName, it.localizedMessage)
-                }) { view?.profileUpdate(true) })
-    }
+    override fun getErrorState(msg: String, retryAction: View.() -> Unit): ProfileViewState =
+            ProfileViewState.ProfileError(msg, retryAction)
 
+    override fun getFilledState(it: ProfileInfo): ProfileViewState =
+            ProfileViewState.ProfileFilled(it)
 
     override fun View.applyState(newState: ProfileViewState) = with(newState) {
         profile_header_content.visibility = headerContentVisibility.visibility()

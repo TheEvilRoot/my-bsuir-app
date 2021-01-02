@@ -7,18 +7,22 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
+import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.common.visibility
+import com.theevilroot.mybsuir.group.GroupFragment
+import com.theevilroot.mybsuir.group.data.Group
 import com.theevilroot.mybsuir.markbook.semesters.SemestersAdapter
 import com.theevilroot.mybsuir.markbook.semesters.SemestersScrollDelegate
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_markbook.view.*
 import org.kodein.di.generic.instance
 import java.net.UnknownHostException
 import kotlin.math.max
 
-class MarkBookFragment : BaseFragment<MarkBookFragment.MarkBookViewState>(R.layout.f_markbook) {
+class MarkBookFragment : ModelDataFragment<MarkBookFragment.MarkBookViewState, MarkBook>(R.layout.f_markbook) {
 
     sealed class MarkBookViewState {
         abstract val progressVisibility: Boolean
@@ -43,7 +47,6 @@ class MarkBookFragment : BaseFragment<MarkBookFragment.MarkBookViewState>(R.layo
     }
 
     private val model: MarkBookModel by instance()
-    private val cacheController: CacheController by instance()
 
     private val controller by lazy { MarkBookController(model) }
 
@@ -58,8 +61,20 @@ class MarkBookFragment : BaseFragment<MarkBookFragment.MarkBookViewState>(R.layo
             addOnScrollListener(SemestersScrollDelegate(::onItemIndexChanged, ::onAlphaChanged))
         }
 
-        updateMarkBook(true)
+        updateData(true)
     }
+
+    override fun getLoadingState(): MarkBookViewState =
+            MarkBookViewState.MarkBookLoading
+
+    override fun getFilledState(it: MarkBook): MarkBookViewState =
+            MarkBookViewState.MarkBookFilled(it)
+
+    override fun getErrorState(msg: String, retryAction: View.() -> Unit): MarkBookViewState =
+            MarkBookViewState.MarkBookFailed(msg, retryAction)
+
+    override fun getDataUpdate(): Single<MarkBook> =
+            controller.updateMarkBook(false)
 
     private fun onItemIndexChanged(index: Int) {
         semestersAdapter.data.getOrNull(index)?.let {
@@ -71,36 +86,6 @@ class MarkBookFragment : BaseFragment<MarkBookFragment.MarkBookViewState>(R.layo
         markbook_title.alpha = alpha
         markbook_subtitle.alpha = alpha
         markbook_average_mark.alpha = alpha
-    }
-
-    private fun View.updateMarkBook(useCurrentCredentials: Boolean) {
-        applyState(MarkBookViewState.MarkBookLoading)
-        cacheController.preloadCacheAndCall(controller
-                .updateMarkBook(false)
-                .observeOn(AndroidSchedulers.mainThread()), useCurrentCredentials)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ updateMarkBookHandler(it) }){
-                    updateMarkBookErrorHandler(it) }
-
-    }
-
-    private fun View.updateMarkBookHandler(it: MarkBook) {
-        applyState(MarkBookViewState.MarkBookFilled(it))
-    }
-
-    private fun View.updateMarkBookErrorHandler(it: Throwable) {
-        applyState(MarkBookViewState.MarkBookFailed(when (it) {
-            is InternalException ->
-                it.msg
-            is NoCredentialsException ->
-                return findNavController().navigate(R.id.fragment_login)
-            is ReAuthRequiredException ->
-                return updateMarkBook(false)
-            is UnknownHostException ->
-                context.getString(R.string.no_internet_error)
-            else -> context.getString(R.string.unexpected_error,
-                    it.javaClass.simpleName, it.localizedMessage)
-        }) { view?.updateMarkBook(true) })
     }
 
     private fun View.updateSemesterHeader(item: Semester) {
