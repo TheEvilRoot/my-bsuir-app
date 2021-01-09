@@ -5,10 +5,6 @@ import com.theevilroot.mybsuir.common.data.PersonalInformation
 import com.theevilroot.mybsuir.common.data.Reference
 import com.theevilroot.mybsuir.common.data.Skill
 
-interface A<T> {
-    fun provide(): T
-}
-
 data class ProfileInfo(
     val fullName: String,
     val shortName: String,

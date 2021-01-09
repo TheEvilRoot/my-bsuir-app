@@ -1,25 +1,17 @@
 package com.theevilroot.mybsuir.markbook
 
 import android.view.View
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.theevilroot.mybsuir.R
-import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
-import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.*
-import com.theevilroot.mybsuir.common.visibility
-import com.theevilroot.mybsuir.group.GroupFragment
-import com.theevilroot.mybsuir.group.data.Group
+import com.theevilroot.mybsuir.common.asVisibility
 import com.theevilroot.mybsuir.markbook.semesters.SemestersAdapter
 import com.theevilroot.mybsuir.markbook.semesters.SemestersScrollDelegate
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_markbook.view.*
 import org.kodein.di.generic.instance
-import java.net.UnknownHostException
 import kotlin.math.max
 
 class MarkBookFragment : ModelDataFragment<MarkBookFragment.MarkBookViewState, MarkBook>(R.layout.f_markbook) {
@@ -94,9 +86,9 @@ class MarkBookFragment : ModelDataFragment<MarkBookFragment.MarkBookViewState, M
     }
 
     override fun View.applyState(newState: MarkBookViewState) = with(newState) {
-        mark_book_view.visibility = markBookVisibility.visibility()
-        markbook_average_mark_layout.visibility = markBookVisibility.visibility()
-        markbook_subtitle.visibility = markBookVisibility.visibility()
+        mark_book_view.visibility = markBookVisibility.asVisibility()
+        markbook_average_mark_layout.visibility = markBookVisibility.asVisibility()
+        markbook_subtitle.visibility = markBookVisibility.asVisibility()
 
         if (this is MarkBookViewState.MarkBookLoading)
             markbook_title.text = "Загрузка..."

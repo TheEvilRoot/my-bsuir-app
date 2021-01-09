@@ -1,5 +1,6 @@
 package com.theevilroot.mybsuir.papers
 
+import android.content.Context
 import com.theevilroot.mybsuir.common.ApiModel
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.CredentialsStore
@@ -8,8 +9,9 @@ import com.theevilroot.mybsuir.common.data.PaperPlaceCategory
 
 class PapersModel (
     api: ApiService,
-    store: CredentialsStore
-) : ApiModel(api, store) {
+    store: CredentialsStore,
+    applicationContext: Context
+) : ApiModel(api, store, applicationContext) {
 
     private val papersCache: MutableList<Paper> = mutableListOf()
     private val placesCache: MutableList<PaperPlaceCategory> = mutableListOf()

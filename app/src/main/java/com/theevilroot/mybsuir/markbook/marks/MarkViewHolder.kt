@@ -6,7 +6,7 @@ import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.adapters.SimpleViewHolder
 import com.theevilroot.mybsuir.common.bind
 import com.theevilroot.mybsuir.common.data.Mark
-import com.theevilroot.mybsuir.common.visibility
+import com.theevilroot.mybsuir.common.asVisibility
 
 sealed class AbstractMarkViewHolder(itemView: View): SimpleViewHolder<Mark>(itemView)
 
@@ -21,7 +21,7 @@ class PassedMarkViewHolder(itemView: View): AbstractMarkViewHolder(itemView) {
         markValue.text = data.mark
         markTeacher.text = data.teacher
 
-        markTeacher.visibility = data.teacher?.isNotEmpty().visibility()
+        markTeacher.visibility = data.teacher?.isNotEmpty().asVisibility()
     }
 }
 
@@ -40,11 +40,11 @@ class PendingMarkViewHolder(itemView: View): AbstractMarkViewHolder(itemView) {
         markType.text = data.form
         markRetakes.text = "${(data.commonRetakes * 100).toInt()}%"
 
-        (data.commonMark > 0.0).visibility().let {
+        (data.commonMark > 0.0).asVisibility().let {
             markAverageValue.visibility = it
             markValueLabel.visibility = it
         }
-        (data.commonRetakes > 0.0).visibility().let {
+        (data.commonRetakes > 0.0).asVisibility().let {
             markRetakes.visibility = it
             markRetakesLabel.visibility = it
         }

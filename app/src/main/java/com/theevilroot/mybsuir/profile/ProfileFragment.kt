@@ -8,21 +8,17 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
-import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
-import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.*
-import com.theevilroot.mybsuir.common.visibility
+import com.theevilroot.mybsuir.common.asVisibility
 import com.theevilroot.mybsuir.profile.holders.ReferenceViewHolder
 import com.theevilroot.mybsuir.profile.holders.SkillsViewHolder
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_profile.view.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
 import kotlinx.android.synthetic.main.i_profile_header.view.*
 import org.kodein.di.generic.instance
-import java.net.UnknownHostException
 import kotlin.math.abs
 
 class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, ProfileInfo>(R.layout.f_profile) {
@@ -104,10 +100,10 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
             ProfileViewState.ProfileFilled(it)
 
     override fun View.applyState(newState: ProfileViewState) = with(newState) {
-        profile_header_content.visibility = headerContentVisibility.visibility()
-        profile_title_name.visibility = headerContentVisibility.visibility()
-        profile_progress.visibility = headerProgressVisibility.visibility()
-        profile_error.visibility = headerErrorVisibility.visibility()
+        profile_header_content.visibility = headerContentVisibility.asVisibility()
+        profile_title_name.visibility = headerContentVisibility.asVisibility()
+        profile_progress.visibility = headerProgressVisibility.asVisibility()
+        profile_error.visibility = headerErrorVisibility.asVisibility()
 
         arrayOf(button_papers, button_exam_sheets, button_settings)
             .forEach { it.isEnabled = buttonsAvailable }
@@ -138,7 +134,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
                 skillsAdapter.setData(skills)
 
                 referencesAdapter.setData(references)
-                profile_no_references.visibility = references.isEmpty().visibility()
+                profile_no_references.visibility = references.isEmpty().asVisibility()
 
                 profile_summary.text = summary ?: getString(R.string.no_summary)
             }

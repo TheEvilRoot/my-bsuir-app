@@ -31,10 +31,10 @@ class App : Application(), KodeinAware {
 
         /* Layer 1 */
         bind<LoginModel>() with singleton { LoginModel(applicationContext, instance()) }
-        bind<ProfileModel>() with singleton { ProfileModel(instance(), instance()) }
-        bind<GroupModel>() with singleton { GroupModel(instance(), instance()) }
-        bind<MarkBookModel>() with singleton { MarkBookModel(instance(), instance()) }
-        bind<PapersModel>() with singleton { PapersModel(instance(), instance()) }
+        bind<ProfileModel>() with singleton { ProfileModel(instance(), instance(), this@App) }
+        bind<GroupModel>() with singleton { GroupModel(instance(), instance(), this@App) }
+        bind<MarkBookModel>() with singleton { MarkBookModel(instance(), instance(), this@App) }
+        bind<PapersModel>() with singleton { PapersModel(instance(), instance(), this@App) }
 
         /* Layout 2 */
         bind<CacheController>() with singleton { CacheController(instance(), instance()) }

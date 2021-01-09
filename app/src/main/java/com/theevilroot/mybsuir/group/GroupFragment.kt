@@ -1,23 +1,15 @@
 package com.theevilroot.mybsuir.group
 
 import android.view.View
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.theevilroot.mybsuir.R
-import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
-import com.theevilroot.mybsuir.common.controller.CacheController
-import com.theevilroot.mybsuir.common.data.InternalException
-import com.theevilroot.mybsuir.common.data.NoCredentialsException
-import com.theevilroot.mybsuir.common.data.ReAuthRequiredException
-import com.theevilroot.mybsuir.common.visibility
+import com.theevilroot.mybsuir.common.asVisibility
 import com.theevilroot.mybsuir.group.data.Group
 import com.theevilroot.mybsuir.group.members.GroupMembersAdapter
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_group.view.*
 import org.kodein.di.generic.instance
-import java.net.UnknownHostException
 
 class GroupFragment : ModelDataFragment<GroupFragment.GroupViewState, Group>(R.layout.f_group) {
 
@@ -70,9 +62,9 @@ class GroupFragment : ModelDataFragment<GroupFragment.GroupViewState, Group>(R.l
             controller.updateGroupInfo(false)
 
     override fun View.applyState(newState: GroupViewState) = with(newState) {
-        group_view.visibility = groupViewVisibility.visibility()
-        group_progress.visibility = progressVisibility.visibility()
-        group_error.visibility = errorViewVisibility.visibility()
+        group_view.visibility = groupViewVisibility.asVisibility()
+        group_progress.visibility = progressVisibility.asVisibility()
+        group_error.visibility = errorViewVisibility.asVisibility()
 
         if (this is GroupViewState.GroupFailedState) {
             group_error_message.text = message

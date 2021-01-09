@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.theevilroot.mybsuir.common.data.GroupMember
 import com.theevilroot.mybsuir.common.data.SpecialGroupMember
-import com.theevilroot.mybsuir.common.visibility
+import com.theevilroot.mybsuir.common.asVisibility
 import kotlinx.android.synthetic.main.i_group_special_member.view.*
 
 abstract class AbstractGroupMemberViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -18,13 +18,13 @@ class SpecialGroupMemberViewHolder(itemView: View): AbstractGroupMemberViewHolde
 
         member_name.text = member.fullName
 
-        member_email.visibility = member.email.isNotEmpty().visibility()
+        member_email.visibility = member.email.isNotEmpty().asVisibility()
         member_email.text = member.email
 
-        member_phone.visibility = member.phone.isNotEmpty().visibility()
+        member_phone.visibility = member.phone.isNotEmpty().asVisibility()
         member_phone.text = member.phone
 
-        member_position.visibility = member.position.isNotEmpty().visibility()
+        member_position.visibility = member.position.isNotEmpty().asVisibility()
         member_position.text = member.position
 
         Glide.with(context)
@@ -37,13 +37,13 @@ class GroupMemberViewHolder(itemView: View): AbstractGroupMemberViewHolder(itemV
     override fun bind(member: GroupMember): Unit = with(itemView) {
         member_name.text = member.fullName
 
-        member_email.visibility = member.email.isNotEmpty().visibility()
+        member_email.visibility = member.email.isNotEmpty().asVisibility()
         member_email.text = member.email
 
-        member_phone.visibility = member.phone.isNotEmpty().visibility()
+        member_phone.visibility = member.phone.isNotEmpty().asVisibility()
         member_phone.text = member.phone
 
-        member_position.visibility = member.position.isNotEmpty().visibility()
+        member_position.visibility = member.position.isNotEmpty().asVisibility()
         member_position.text = member.position
     }
 }

@@ -1,11 +1,12 @@
 package com.theevilroot.mybsuir.group
 
+import android.content.Context
 import com.theevilroot.mybsuir.common.ApiModel
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.data.GroupInfo
 
-class GroupModel (api: ApiService, store: CredentialsStore): ApiModel(api, store) {
+class GroupModel (api: ApiService, store: CredentialsStore, applicationContext: Context): ApiModel(api, store, applicationContext) {
 
     private var groupInfoCache: GroupInfo? = null
 

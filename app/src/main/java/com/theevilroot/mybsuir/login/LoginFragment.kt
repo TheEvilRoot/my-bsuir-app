@@ -9,7 +9,7 @@ import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.InternalException
-import com.theevilroot.mybsuir.common.visibility
+import com.theevilroot.mybsuir.common.asVisibility
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.f_login.view.*
 import org.kodein.di.generic.instance
@@ -113,9 +113,9 @@ class LoginFragment : BaseFragment<LoginFragment.LoginViewState>(R.layout.f_logi
     }
 
     override fun View.applyState(newState: LoginViewState) = with(newState) {
-        login_content.visibility = newState.contentVisibility.visibility()
-        login_loading.visibility = newState.progressVisibility.visibility()
-        login_error.visibility = newState.errorVisibility.visibility()
+        login_content.visibility = newState.contentVisibility.asVisibility()
+        login_loading.visibility = newState.progressVisibility.asVisibility()
+        login_error.visibility = newState.errorVisibility.asVisibility()
 
         if (this is LoginViewState.LoginFailedState)
             login_error.text = errorMessage
