@@ -30,4 +30,6 @@ interface ApiService {
     @GET("portal/certificate/places")
     fun places(@Header("Cookie") token: String): Call<List<PaperPlaceCategory>>
 
+    @GET("portal/markSheet")
+    fun markSheet(@Header("Cookie") token: String): Call<List<MarkSheet>>
 }

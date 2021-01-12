@@ -38,6 +38,7 @@ class App : Application(), KodeinAware {
 
         /* Layout 2 */
         bind<CacheController>() with singleton { CacheController(instance(), instance()) }
+        bind<SharedModel>() with singleton { SharedModel(instance(), instance(), instance(), instance()) }
     }
 
     private fun createHttpClient(): OkHttpClient =

@@ -10,11 +10,11 @@ class MarkBookModel (
         api: ApiService,
         store: CredentialsStore,
         applicationContext: Context
-): ApiModel(api, store, applicationContext) {
+): ApiModel(api, store, applicationContext), IMarkBookModel {
 
     private var markBookCache: MarkBook? = null
 
-    fun getMarkBook(allowCache: Boolean): MarkBook? {
+    override fun getMarkBook(allowCache: Boolean): MarkBook? {
         return apiCall(ApiService::markBook, if (allowCache) markBookCache else null)
                 ?.apply { markBookCache = this }
     }
