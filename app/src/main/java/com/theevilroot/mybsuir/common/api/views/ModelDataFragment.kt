@@ -53,4 +53,6 @@ abstract class ModelDataFragment<State, MT>(@LayoutRes layoutRes: Int) : BaseFra
                 }) { view?.updateData(true) })
     }
 
+    protected open fun onDataUpdated(data: MT) { }
+
 }

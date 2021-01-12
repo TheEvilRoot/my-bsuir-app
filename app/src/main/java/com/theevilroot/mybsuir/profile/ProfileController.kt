@@ -1,7 +1,9 @@
 package com.theevilroot.mybsuir.profile
 
+import com.theevilroot.mybsuir.common.SharedModel
 import com.theevilroot.mybsuir.common.data.InternalException
 import com.theevilroot.mybsuir.common.data.NoCredentialsException
+import com.theevilroot.mybsuir.common.data.Paper
 import com.theevilroot.mybsuir.login.LoginModel
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import io.reactivex.rxjava3.core.Completable
@@ -9,7 +11,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class ProfileController (
-    val model: ProfileModel,
+    val model: SharedModel
 ) {
 
     fun updateProfileInfo(forceUpdate: Boolean): Single<ProfileInfo> =
@@ -33,6 +35,14 @@ class ProfileController (
                 personalCv
             )
             it.onSuccess(profileInfo)
+        }.subscribeOn(Schedulers.io())
+
+    fun updatePapersCount(): Single<Int> =
+        Single.create<Int> { emitter ->
+            val papers = model.getPapers(true)
+                ?: return@create emitter.onSuccess(0)
+
+            emitter.onSuccess(papers.count { true || it.status() != Paper.Status.PRINTED })
         }.subscribeOn(Schedulers.io())
 
 }

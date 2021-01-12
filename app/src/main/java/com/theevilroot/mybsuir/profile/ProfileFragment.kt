@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.theevilroot.mybsuir.R
+import com.theevilroot.mybsuir.common.SharedModel
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
@@ -14,8 +15,10 @@ import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.common.asVisibility
 import com.theevilroot.mybsuir.profile.holders.ReferenceViewHolder
 import com.theevilroot.mybsuir.profile.holders.SkillsViewHolder
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_profile.view.*
+import kotlinx.android.synthetic.main.i_profile_content.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
 import kotlinx.android.synthetic.main.i_profile_header.view.*
 import org.kodein.di.generic.instance
@@ -55,7 +58,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         }
     }
 
-    private val model: ProfileModel by instance()
+    private val model: SharedModel by instance(tag="shared")
 
     private val controller by lazy { ProfileController(model) }
 
@@ -85,6 +88,17 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         }
 
         updateData(true)
+    }
+
+    override fun onDataUpdated(data: ProfileInfo) {
+        controller.updatePapersCount().observeOn(AndroidSchedulers.mainThread()).subscribe({
+            if (it == 0)
+                clearPapersBadge()
+            else setPapersBadge(it)
+        }, {
+            it.printStackTrace()
+            clearPapersBadge()
+        })
     }
 
     override fun getDataUpdate(): Single<ProfileInfo> =
@@ -144,6 +158,15 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
             profile_error_message.text = message
             profile_refresh.setOnClickListener(retryHandler)
         }
+    }
+
+    private fun setPapersBadge(count: Int) {
+        papers_badge.visibility = View.VISIBLE
+        papers_badge.text = "$count"
+    }
+
+    private fun clearPapersBadge() {
+        papers_badge.visibility = View.GONE
     }
 
 }

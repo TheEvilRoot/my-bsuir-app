@@ -11,18 +11,48 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
+        <TextView
+            android:id="@+id/papers_badge"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:background="@drawable/b_badge"
+            android:elevation="12dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:translationX="6dp"
+            android:translationY="6dp"
+            app:layout_constraintBottom_toBottomOf="@+id/button_papers"
+            app:layout_constraintEnd_toEndOf="@+id/button_papers"
+            tools:text="1" />
+
+        <TextView
+            android:id="@+id/sheets_badge"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:background="@drawable/b_badge"
+            android:elevation="12dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:translationX="6dp"
+            android:translationY="6dp"
+            app:layout_constraintBottom_toBottomOf="@+id/button_exam_sheets"
+            app:layout_constraintEnd_toEndOf="@+id/button_exam_sheets"
+            tools:text="1" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_papers"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
             android:background="@drawable/b_filled_button"
             android:paddingHorizontal="8dp"
             android:text="Справки..."
             android:textColor="@color/colorPrimary"
             app:layout_constraintEnd_toStartOf="@+id/button_exam_sheets"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="4dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_exam_sheets"
