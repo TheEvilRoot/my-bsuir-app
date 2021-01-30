@@ -2,6 +2,9 @@ package com.theevilroot.mybsuir.profile
 
 import android.view.View
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -90,6 +93,14 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
 
         button_exam_sheets.setOnClickListener {
             findNavController().navigate(R.id.fragment_sheets)
+        }
+
+        profile_logout.setOnClickListener {
+            val options = NavOptions.Builder()
+                    .setPopUpTo(R.id.fragment_login, true)
+                    .build()
+            findNavController().navigate(R.id.fragment_login,
+                    bundleOf("logout" to true), options)
         }
 
         updateData(true)

@@ -49,7 +49,7 @@ class ProfileController (
         Single.create<Int> { emitter ->
             val sheets = model.getMarkSheets(true)
                     ?: return@create emitter.onSuccess(0)
-            emitter.onSuccess(sheets.count { it.status != MarkSheet.Status.PRINTED })
+            emitter.onSuccess(sheets.count { it.status() != MarkSheet.Status.PRINTED })
         }.subscribeOn(Schedulers.io())
 
 }

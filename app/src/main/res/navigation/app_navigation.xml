@@ -8,7 +8,13 @@
         android:id="@+id/fragment_login"
         android:name="com.theevilroot.mybsuir.login.LoginFragment"
         android:label="Авторизация"
-        tools:layout="@layout/f_login"/>
+        tools:layout="@layout/f_login">
+        <argument
+            android:name="logout"
+            app:nullable="false"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
     <fragment
         android:id="@+id/fragment_profile"
         android:name="com.theevilroot.mybsuir.profile.ProfileFragment"

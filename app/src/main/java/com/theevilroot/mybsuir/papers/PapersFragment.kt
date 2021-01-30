@@ -9,22 +9,12 @@ import com.google.android.material.appbar.AppBarLayout
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.adapters.ErrorAwareAdapter
 import com.theevilroot.mybsuir.common.adapters.ErrorDescriptor
-import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
-import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
-import com.theevilroot.mybsuir.common.controller.CacheController
-import com.theevilroot.mybsuir.common.data.InternalException
-import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.common.data.Paper
-import com.theevilroot.mybsuir.common.data.ReAuthRequiredException
 import com.theevilroot.mybsuir.papers.holders.PaperViewHolder
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_papers.view.*
 import org.kodein.di.generic.instance
-import java.net.SocketException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import kotlin.math.abs
 
 class PapersFragment : ModelDataFragment<PapersFragment.PapersViewState, List<Paper>>(R.layout.f_papers) {

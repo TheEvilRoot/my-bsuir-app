@@ -23,7 +23,6 @@ data class MarkSheet(
                 PRINTED("напечатана"), NOP("NOP")
         }
 
-        val status: Status =
-                Status.values().firstOrNull { it.string == statusString }
-                        ?: Status.NOP
+        fun status(): Status =
+                Status.values().firstOrNull { it.string == statusString } ?: Status.NOP
 }

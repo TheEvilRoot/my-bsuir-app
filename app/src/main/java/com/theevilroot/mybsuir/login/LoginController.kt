@@ -22,5 +22,10 @@ class LoginController (
             it.onComplete()
         }.subscribeOn(Schedulers.io())
 
+    fun logout(): Completable =
+        Completable.create {
+            model.logout()
+            it.onComplete()
+        }.subscribeOn(Schedulers.io())
 
 }

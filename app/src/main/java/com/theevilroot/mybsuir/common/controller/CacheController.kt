@@ -45,7 +45,7 @@ class CacheController (
                 val (login, password) = cache.credentials
                         ?: return@create it.onSuccess(false)
 
-                val result = loginModel.login(login, password, false, true)
+                val result = loginModel.login(login, password, saveToken=false, saveCredentials=true)
                 if (result?.cookie == null)
                     return@create it.onSuccess(false)
 

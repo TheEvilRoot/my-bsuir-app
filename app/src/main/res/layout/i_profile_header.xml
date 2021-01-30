@@ -18,6 +18,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/CircleImageView" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/profile_logout"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:drawableBottom="@drawable/ic_round_exit"
+        android:drawableTint="@color/colorPrimary"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/profile_header_name"
         android:layout_width="wrap_content"

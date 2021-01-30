@@ -64,4 +64,10 @@ class LoginModel (context: Context, val api: ApiService) {
         return null
     }
 
+    fun logout() {
+        val file = File(appContext.filesDir, "usercache.dat")
+        if (file.exists())
+            file.delete()
+    }
+
 }

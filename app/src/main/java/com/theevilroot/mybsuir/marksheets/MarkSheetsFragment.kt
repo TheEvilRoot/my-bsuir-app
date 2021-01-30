@@ -1,5 +1,6 @@
 package com.theevilroot.mybsuir.marksheets
 
+import android.graphics.Color
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -81,6 +82,7 @@ class MarkSheetsFragment: ModelDataFragment<MarkSheetsFragment.MarkSheetsViewSta
                     title = "Ошибка",
                     message = message,
                     retryAction = retryAction,
-                    imageRes = image)
+                    imageRes = image,
+                    backgroundColor = Color.rgb(0xf3, 0xf3, 0xf3))
     }
 }

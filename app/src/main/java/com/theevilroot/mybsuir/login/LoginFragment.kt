@@ -4,6 +4,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
@@ -65,15 +66,20 @@ class LoginFragment : BaseFragment<LoginFragment.LoginViewState>(R.layout.f_logi
     override fun View.onView() {
         applyState(LoginViewState.LoginLoadingState)
 
-        cacheController.getCachedCredentials().observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ isAuthorized ->
-                if (isAuthorized) {
-                    return@subscribe setLoginSucceed()
-                }
-                applyState(LoginViewState.LoginIdleState)
-            }) { applyState(LoginViewState.LoginIdleState) }
-
+        if (arguments?.getBoolean("logout", false) == true)
+            controller.logout().subscribe({ initLogin() }) { initLogin() }
+        else initLogin()
         login_submit.setOnClickListener { userLogin() }
+    }
+
+    private fun View.initLogin() {
+        cacheController.getCachedCredentials().observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ isAuthorized ->
+                    if (isAuthorized) {
+                        return@subscribe setLoginSucceed()
+                    }
+                    applyState(LoginViewState.LoginIdleState)
+                }) { applyState(LoginViewState.LoginIdleState) }
     }
 
     private fun View.userLogin() {
