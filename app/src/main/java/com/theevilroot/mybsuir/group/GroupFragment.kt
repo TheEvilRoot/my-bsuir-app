@@ -1,6 +1,7 @@
 package com.theevilroot.mybsuir.group
 
 import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
@@ -28,14 +29,14 @@ class GroupFragment : ModelDataFragment<GroupFragment.GroupViewState, Group>(R.l
             override val groupViewVisibility: Boolean = true
             override val errorViewVisibility: Boolean = false
         }
-        class GroupFailedState(val message: String, val retryHandler: View.() -> Unit): GroupViewState() {
+        class GroupFailedState(@DrawableRes val image: Int, val message: String, val retryHandler: View.() -> Unit): GroupViewState() {
             override val progressVisibility: Boolean = false
             override val groupViewVisibility: Boolean = false
             override val errorViewVisibility: Boolean = true
         }
     }
 
-    private val groupModel: GroupModel by instance()
+    private val groupModel: IGroupModel by instance()
 
     private val controller by lazy { GroupController(groupModel) }
     private val groupAdapter by lazy { GroupMembersAdapter() }
@@ -55,8 +56,8 @@ class GroupFragment : ModelDataFragment<GroupFragment.GroupViewState, Group>(R.l
     override fun getFilledState(it: Group): GroupViewState =
             GroupViewState.GroupFilledState(it)
 
-    override fun getErrorState(msg: String, retryAction: View.() -> Unit): GroupViewState =
-            GroupViewState.GroupFailedState(msg, retryAction)
+    override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): GroupViewState =
+            GroupViewState.GroupFailedState(getImageForError(it), msg, retryAction)
 
     override fun getDataUpdate(): Single<Group> =
             controller.updateGroupInfo(false)
@@ -65,10 +66,12 @@ class GroupFragment : ModelDataFragment<GroupFragment.GroupViewState, Group>(R.l
         group_view.visibility = groupViewVisibility.asVisibility()
         group_progress.visibility = progressVisibility.asVisibility()
         group_error.visibility = errorViewVisibility.asVisibility()
+        group_error_image.visibility = errorViewVisibility.asVisibility()
 
         if (this is GroupViewState.GroupFailedState) {
             group_error_message.text = message
             group_retry.setOnClickListener(retryHandler)
+            group_error_image.setImageResource(image)
         }
 
         if (this is GroupViewState.GroupFilledState) {

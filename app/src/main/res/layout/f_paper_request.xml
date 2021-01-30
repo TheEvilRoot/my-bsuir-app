@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/papers_request_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Заказ справки"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:layout_margin="8dp"
+        android:textStyle="bold"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_below="@id/papers_request_title">
+
+    </ScrollView>
 
 </RelativeLayout>

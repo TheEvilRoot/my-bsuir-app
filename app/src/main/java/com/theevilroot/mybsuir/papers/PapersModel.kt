@@ -18,10 +18,20 @@ class PapersModel (
 
     override fun getPapers(allowCache: Boolean): List<Paper>? =
         apiCall(ApiService::certificate, if (allowCache && papersCache.isNotEmpty()) papersCache else null)
-            ?.also { papersCache.clear(); papersCache.addAll(it) }
+            ?.also {
+                if (!allowCache || papersCache.isEmpty()) {
+                    papersCache.clear()
+                    papersCache.addAll(it)
+                }
+            }
 
     override fun getPlaces(allowCache: Boolean): List<PaperPlaceCategory>? =
             apiCall(ApiService::places, if (allowCache && placesCache.isNotEmpty()) placesCache else null)
-                    ?.also { placesCache.clear(); placesCache.addAll(it) }
+                    ?.also {
+                        if (!allowCache || placesCache.isEmpty()) {
+                            placesCache.clear()
+                            placesCache.addAll(it)
+                        }
+                    }
 
 }

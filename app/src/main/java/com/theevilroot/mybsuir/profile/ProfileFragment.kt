@@ -1,6 +1,7 @@
 package com.theevilroot.mybsuir.profile
 
 import android.view.View
+import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -58,7 +59,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         }
     }
 
-    private val model: SharedModel by instance(tag="shared")
+    private val model: SharedModel by instance()
 
     private val controller by lazy { ProfileController(model) }
 
@@ -87,17 +88,29 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
             findNavController().navigate(R.id.fragment_papers)
         }
 
+        button_exam_sheets.setOnClickListener {
+            findNavController().navigate(R.id.fragment_sheets)
+        }
+
         updateData(true)
     }
 
     override fun onDataUpdated(data: ProfileInfo) {
         controller.updatePapersCount().observeOn(AndroidSchedulers.mainThread()).subscribe({
             if (it == 0)
-                clearPapersBadge()
-            else setPapersBadge(it)
+                clearBadge(papers_badge)
+            else setBadge(papers_badge, it)
         }, {
             it.printStackTrace()
-            clearPapersBadge()
+            clearBadge(papers_badge)
+        })
+        controller.updateSheetsCount().observeOn(AndroidSchedulers.mainThread()).subscribe({
+            if (it == 0)
+                clearBadge(sheets_badge)
+            else setBadge(sheets_badge, it)
+        }, {
+            it.printStackTrace()
+            clearBadge(sheets_badge)
         })
     }
 
@@ -107,7 +120,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
     override fun getLoadingState(): ProfileViewState =
             ProfileViewState.ProfileLoading
 
-    override fun getErrorState(msg: String, retryAction: View.() -> Unit): ProfileViewState =
+    override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): ProfileViewState =
             ProfileViewState.ProfileError(msg, retryAction)
 
     override fun getFilledState(it: ProfileInfo): ProfileViewState =
@@ -118,6 +131,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         profile_title_name.visibility = headerContentVisibility.asVisibility()
         profile_progress.visibility = headerProgressVisibility.asVisibility()
         profile_error.visibility = headerErrorVisibility.asVisibility()
+        profile_summary.visibility = headerContentVisibility.asVisibility()
 
         arrayOf(button_papers, button_exam_sheets, button_settings)
             .forEach { it.isEnabled = buttonsAvailable }
@@ -160,13 +174,12 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         }
     }
 
-    private fun setPapersBadge(count: Int) {
-        papers_badge.visibility = View.VISIBLE
-        papers_badge.text = "$count"
+    private fun setBadge(badge: TextView, count: Int) {
+        badge.visibility = View.VISIBLE
+        badge.text = "$count"
     }
 
-    private fun clearPapersBadge() {
-        papers_badge.visibility = View.GONE
+    private fun clearBadge(badge: TextView) {
+        badge.visibility = View.GONE
     }
-
 }

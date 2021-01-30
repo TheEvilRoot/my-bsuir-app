@@ -46,6 +46,17 @@
         app:layout_constraintTop_toBottomOf="@+id/group_toolbar"
         tools:listitem="@layout/i_group_member" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/group_error_image"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/group_error_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_round_error"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/group_error_message"
         android:layout_width="wrap_content"

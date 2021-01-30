@@ -5,6 +5,7 @@ import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.group.GroupModel
 import com.theevilroot.mybsuir.login.LoginModel
 import com.theevilroot.mybsuir.markbook.MarkBookModel
+import com.theevilroot.mybsuir.marksheets.MarkSheetsModel
 import com.theevilroot.mybsuir.papers.PapersModel
 import com.theevilroot.mybsuir.profile.ProfileModel
 import okhttp3.OkHttpClient
@@ -31,14 +32,19 @@ class App : Application(), KodeinAware {
 
         /* Layer 1 */
         bind<LoginModel>() with singleton { LoginModel(applicationContext, instance()) }
+
+        /*
+            separated models injection. not needed when shared model is injected.
         bind<ProfileModel>() with singleton { ProfileModel(instance(), instance(), this@App) }
         bind<GroupModel>() with singleton { GroupModel(instance(), instance(), this@App) }
         bind<MarkBookModel>() with singleton { MarkBookModel(instance(), instance(), this@App) }
         bind<PapersModel>() with singleton { PapersModel(instance(), instance(), this@App) }
+        bind<MarkSheetsModel>() with singleton { MarkSheetsModel(instance(), instance(), this@App) }
+         */
+        bind<SharedModel>() with singleton { SharedModel(instance(), instance(), this@App) }
 
         /* Layout 2 */
         bind<CacheController>() with singleton { CacheController(instance(), instance()) }
-        bind<SharedModel>(tag="shared") with singleton { SharedModel(instance(), instance(), instance(), instance()) }
     }
 
     private fun createHttpClient(): OkHttpClient =

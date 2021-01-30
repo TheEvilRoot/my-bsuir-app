@@ -1,6 +1,7 @@
 package com.theevilroot.mybsuir.papers.request
 
 import android.view.View
+import androidx.navigation.findNavController
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.papers.PapersController

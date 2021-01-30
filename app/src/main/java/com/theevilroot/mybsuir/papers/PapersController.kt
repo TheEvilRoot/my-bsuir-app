@@ -6,7 +6,7 @@ import com.theevilroot.mybsuir.common.data.PaperPlaceCategory
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class PapersController (val model: PapersModel) {
+class PapersController (val model: IPapersModel) {
 
     fun updatePapers(forceUpdate: Boolean): Single<List<Paper>> =
         Single.create<List<Paper>> {

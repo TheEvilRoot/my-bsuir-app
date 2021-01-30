@@ -1,6 +1,7 @@
 package com.theevilroot.mybsuir.common.api.views
 
 import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.navigation.findNavController
 import com.theevilroot.mybsuir.R
@@ -13,6 +14,7 @@ import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import org.kodein.di.generic.instance
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 abstract class ModelDataFragment<State, MT>(@LayoutRes layoutRes: Int) : BaseFragment<State>(layoutRes) {
@@ -21,7 +23,7 @@ abstract class ModelDataFragment<State, MT>(@LayoutRes layoutRes: Int) : BaseFra
 
     protected abstract fun getLoadingState(): State
     protected abstract fun getFilledState(it: MT): State
-    protected abstract fun getErrorState(msg: String, retryAction: View.() -> Unit): State
+    protected abstract fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): State
 
     protected abstract fun getDataUpdate(): Single<MT>
 
@@ -34,12 +36,14 @@ abstract class ModelDataFragment<State, MT>(@LayoutRes layoutRes: Int) : BaseFra
                     dataUpdateErrorHandler(it) }
     }
 
-    private fun View.dataUpdateHandler(it: MT) =
-            applyState(getFilledState(it))
+    private fun View.dataUpdateHandler(it: MT) {
+        applyState(getFilledState(it))
+        onDataUpdated(it)
+    }
 
     private fun View.dataUpdateErrorHandler(it: Throwable) {
         it.printStackTrace()
-        applyState(getErrorState(when (it) {
+        applyState(getErrorState(it, when (it) {
                     is InternalException ->
                         it.msg
                     is NoCredentialsException ->
@@ -48,9 +52,18 @@ abstract class ModelDataFragment<State, MT>(@LayoutRes layoutRes: Int) : BaseFra
                         return updateData(false)
                     is UnknownHostException ->
                         context.getString(R.string.no_internet_error)
+                    is SocketTimeoutException ->
+                        context.getString(R.string.timeout_error)
                     else -> context.getString(R.string.unexpected_error,
                             it.javaClass.simpleName, it.localizedMessage)
                 }) { view?.updateData(true) })
+    }
+
+    @DrawableRes
+    protected fun getImageForError(it: Throwable): Int = when (it) {
+        is UnknownHostException -> R.drawable.ic_round_wifi_off_24
+        is SocketTimeoutException -> R.drawable.ic_round_sentiment_very_dissatisfied_24
+        else -> R.drawable.ic_round_error
     }
 
     protected open fun onDataUpdated(data: MT) { }

@@ -38,7 +38,7 @@ class MarkBookFragment : ModelDataFragment<MarkBookFragment.MarkBookViewState, M
         }
     }
 
-    private val model: MarkBookModel by instance()
+    private val model: IMarkBookModel by instance()
 
     private val controller by lazy { MarkBookController(model) }
 
@@ -62,7 +62,7 @@ class MarkBookFragment : ModelDataFragment<MarkBookFragment.MarkBookViewState, M
     override fun getFilledState(it: MarkBook): MarkBookViewState =
             MarkBookViewState.MarkBookFilled(it)
 
-    override fun getErrorState(msg: String, retryAction: View.() -> Unit): MarkBookViewState =
+    override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): MarkBookViewState =
             MarkBookViewState.MarkBookFailed(msg, retryAction)
 
     override fun getDataUpdate(): Single<MarkBook> =

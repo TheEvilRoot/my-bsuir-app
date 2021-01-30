@@ -2,6 +2,7 @@ package com.theevilroot.mybsuir.profile
 
 import com.theevilroot.mybsuir.common.SharedModel
 import com.theevilroot.mybsuir.common.data.InternalException
+import com.theevilroot.mybsuir.common.data.MarkSheet
 import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.common.data.Paper
 import com.theevilroot.mybsuir.login.LoginModel
@@ -41,8 +42,14 @@ class ProfileController (
         Single.create<Int> { emitter ->
             val papers = model.getPapers(true)
                 ?: return@create emitter.onSuccess(0)
+            emitter.onSuccess(papers.count { it.status() != Paper.Status.PRINTED })
+        }.subscribeOn(Schedulers.io())
 
-            emitter.onSuccess(papers.count { true || it.status() != Paper.Status.PRINTED })
+    fun updateSheetsCount(): Single<Int> =
+        Single.create<Int> { emitter ->
+            val sheets = model.getMarkSheets(true)
+                    ?: return@create emitter.onSuccess(0)
+            emitter.onSuccess(sheets.count { it.status != MarkSheet.Status.PRINTED })
         }.subscribeOn(Schedulers.io())
 
 }

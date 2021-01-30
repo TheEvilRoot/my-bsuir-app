@@ -8,7 +8,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class GroupController (
-        val model: GroupModel,
+        val model: IGroupModel,
 ) {
 
     fun updateGroupInfo(forceUpdate: Boolean): Single<Group> =

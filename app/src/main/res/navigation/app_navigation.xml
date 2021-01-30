@@ -30,4 +30,14 @@
         android:label="PapersFragment"
         tools:layout="@layout/f_papers" />
 
+    <fragment android:id="@+id/fragment_sheets"
+        android:name="com.theevilroot.mybsuir.marksheets.MarkSheetsFragment"
+        android:label="MarkSheetsFragment"
+        tools:layout="@layout/f_mark_sheets" />
+
+    <fragment android:id="@+id/fragment_request_paper"
+        android:name="com.theevilroot.mybsuir.papers.request.PaperRequestFragment"
+        tools:layout="@layout/f_paper_request"
+        android:label="PaperRequestFragment" />
+
 </navigation>

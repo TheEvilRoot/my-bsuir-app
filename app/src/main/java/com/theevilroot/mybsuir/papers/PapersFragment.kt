@@ -1,10 +1,14 @@
 package com.theevilroot.mybsuir.papers
 
+import android.graphics.Color
 import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.theevilroot.mybsuir.R
+import com.theevilroot.mybsuir.common.adapters.ErrorAwareAdapter
+import com.theevilroot.mybsuir.common.adapters.ErrorDescriptor
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
@@ -18,6 +22,8 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_papers.view.*
 import org.kodein.di.generic.instance
+import java.net.SocketException
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import kotlin.math.abs
 
@@ -26,25 +32,29 @@ class PapersFragment : ModelDataFragment<PapersFragment.PapersViewState, List<Pa
     sealed class PapersViewState {
 
         abstract val loadingVisibility: Boolean
+        abstract val errorVisibility: Boolean
 
         object PapersLoading : PapersViewState() {
             override val loadingVisibility: Boolean = true
+            override val errorVisibility: Boolean = false
         }
 
-        class PapersFailure(val message: String, val retry: View.() -> Unit) : PapersViewState() {
+        class PapersFailure(@DrawableRes val image: Int, val message: String, val retry: View.() -> Unit) : PapersViewState() {
             override val loadingVisibility: Boolean = false
+            override val errorVisibility: Boolean = true
 
         }
 
         class PapersFilled (val papers: List<Paper>) : PapersViewState() {
             override val loadingVisibility: Boolean = false
+            override val errorVisibility: Boolean = false
 
         }
     }
 
-    private val model by instance<PapersModel>()
+    private val model by instance<IPapersModel>()
     private val controller by lazy { PapersController(model) }
-    private val papersAdapter by lazy { SimpleAdapter(R.layout.i_paper, ::PaperViewHolder) }
+    private val papersAdapter by lazy { ErrorAwareAdapter(R.layout.i_paper, ::PaperViewHolder) }
 
     override fun View.onView() {
         with(papers_app_bar) {
@@ -62,6 +72,9 @@ class PapersFragment : ModelDataFragment<PapersFragment.PapersViewState, List<Pa
         with(papers_refresh) {
             setOnRefreshListener { updateData(true) }
         }
+        with(get_paper_button) {
+            setOnClickListener { findNavController().navigate(R.id.fragment_request_paper) }
+        }
         updateData(true)
     }
 
@@ -71,18 +84,26 @@ class PapersFragment : ModelDataFragment<PapersFragment.PapersViewState, List<Pa
     override fun getFilledState(it: List<Paper>): PapersViewState =
             PapersViewState.PapersFilled(it)
 
-    override fun getErrorState(msg: String, retryAction: View.() -> Unit): PapersViewState =
-            PapersViewState.PapersFailure(msg, retryAction)
+    override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): PapersViewState =
+            PapersViewState.PapersFailure(getImageForError(it), msg, retryAction)
 
     override fun getDataUpdate(): Single<List<Paper>> =
             controller.updatePapers(true)
 
     override fun View.applyState(newState: PapersViewState) = with(newState) {
         papers_refresh.isRefreshing = loadingVisibility
+        if (!errorVisibility)
+            papersAdapter.error = null
 
-        if (this is PapersViewState.PapersFilled) {
+        if (this is PapersViewState.PapersFilled)
             papersAdapter.setData(papers)
-        }
+        if (this is PapersViewState.PapersFailure)
+            papersAdapter.error = ErrorDescriptor (
+                    title = "Ошибка",
+                    message = message,
+                    retryAction = retry,
+                    imageRes = image,
+                    backgroundColor = Color.rgb(0xf2, 0xee, 0xcb))
     }
 
 }

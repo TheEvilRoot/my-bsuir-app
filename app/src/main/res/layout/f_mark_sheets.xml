@@ -6,34 +6,33 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/papers_app_bar"
+        android:id="@+id/sheets_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/papers_collapting_toolbar"
+            android:id="@+id/sheets_collapting_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_collapseMode="parallax"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             android:background="@color/colorPrimaryDark">
             <RelativeLayout
-                android:id="@+id/papers_header_layout"
+                android:id="@+id/sheets_header_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/papers_title"
+                    android:id="@+id/sheets_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Справки"
+                    android:text="Ведомостички"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:layout_margin="8dp"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"/>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/get_paper_button"
-                    android:text="Заказать справку"
+                    android:text="Заказать ведомостичку"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -43,17 +42,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_below="@id/papers_title"/>
+                    android:layout_below="@id/sheets_title"/>
             </RelativeLayout>
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/papers_toolbar"
+                android:id="@+id/sheets_toolbar"
                 app:layout_collapseMode="pin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Заказ справок"
+                    android:text="Заказ ведомостичек"
                     android:textSize="24sp"
                     android:layout_margin="8dp"
                     android:textStyle="bold"
@@ -63,16 +62,15 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/papers_refresh"
+        android:id="@+id/sheets_refresh"
         android:layout_width="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_height="wrap_content">
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/papers_view"
+            android:id="@+id/sheets_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
-            tools:listitem="@layout/i_paper" />
+            tools:listitem="@layout/i_sheet" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

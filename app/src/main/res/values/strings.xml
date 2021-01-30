@@ -57,4 +57,5 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
     <string name="no_summary">Пока не указано никакой информации...</string>
     <string name="references_title">Ссылки</string>
     <string name="no_references">У вас пока нет никаких ссылок...</string>
+    <string name="timeout_error">Сервер не отвечает. Возможно технические неполадки в работе сервиса. Попробуйте повторить попытку позже</string>
 </resources>
