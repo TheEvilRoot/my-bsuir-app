@@ -18,11 +18,20 @@ data class MarkSheet(
         val totalApproved: Int,
         val retakeCount: Int,
         val term: Int,
+        val price: Float?,
+        val hours: Int?,
 ) {
-        enum class Status(val string: String) {
-                PRINTED("напечатана"), NOP("NOP")
-        }
+    enum class Status(val string: String) {
+        PRINTED("напечатана"), NOP("NOP")
+    }
 
-        fun status(): Status =
-                Status.values().firstOrNull { it.string == statusString } ?: Status.NOP
+    fun status(): Status =
+            Status.values().firstOrNull { it.string == statusString } ?: Status.NOP
+
+    fun price(): Float {
+        if (price != null)
+            return price
+
+        return type.coefficient * employee.rank.price
+    }
 }

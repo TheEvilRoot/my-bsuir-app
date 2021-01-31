@@ -3,13 +3,16 @@
 
     <item
         android:id="@+id/fragment_markbook"
+        android:icon="@drawable/ic_round_list_alt"
         android:title="Зачетка" />
 
     <item
         android:id="@+id/fragment_profile"
+        android:icon="@drawable/ic_round_person"
         android:title="Профиль"/>
 
     <item
         android:id="@id/fragment_group"
+        android:icon="@drawable/ic_round_group"
         android:title="Группа" />
 </menu>
