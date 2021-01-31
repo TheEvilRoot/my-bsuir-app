@@ -4,7 +4,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
@@ -12,6 +11,7 @@ import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.InternalException
 import com.theevilroot.mybsuir.common.asVisibility
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.f_login.*
 import kotlinx.android.synthetic.main.f_login.view.*
 import org.kodein.di.generic.instance
 import java.net.UnknownHostException
@@ -69,7 +69,10 @@ class LoginFragment : BaseFragment<LoginFragment.LoginViewState>(R.layout.f_logi
         if (arguments?.getBoolean("logout", false) == true)
             controller.logout().subscribe({ initLogin() }) { initLogin() }
         else initLogin()
+
         login_submit.setOnClickListener { userLogin() }
+        login_chip.setOnCheckedChangeListener { _, isChecked -> updateRememberChip(isChecked) }
+        updateRememberChip(login_chip.isChecked)
     }
 
     private fun View.initLogin() {
@@ -85,6 +88,7 @@ class LoginFragment : BaseFragment<LoginFragment.LoginViewState>(R.layout.f_logi
     private fun View.userLogin() {
         val usernameText = login_username.text?.toString()
         val passwordText = login_password.text?.toString()
+        val rememberMe = login_chip.isChecked
 
         if (usernameText?.isNotBlank() != true) {
             return applyState(LoginViewState.LoginFailedState("Пожалуйста, введите имя пользователя"))
@@ -97,7 +101,7 @@ class LoginFragment : BaseFragment<LoginFragment.LoginViewState>(R.layout.f_logi
         }
 
         applyState(LoginViewState.LoginLoadingState)
-        controller.login(usernameText, passwordText)
+        controller.login(usernameText, passwordText, rememberMe)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(::setLoginSucceed) {
                 applyState(LoginViewState.LoginFailedState(when (it) {
@@ -137,6 +141,13 @@ class LoginFragment : BaseFragment<LoginFragment.LoginViewState>(R.layout.f_logi
                 imm.hideSoftInputFromWindow(it.windowToken, 0)
             }
         }
+    }
 
+    private fun updateRememberChip(isChecked: Boolean) {
+        if (isChecked) {
+            login_chip.text = "Не запоминать меня"
+        } else {
+            login_chip.text = "Запомнить меня"
+        }
     }
 }

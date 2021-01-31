@@ -12,9 +12,9 @@ class LoginController (
     private val store: CredentialsStore
 ) {
 
-    fun login(username: String, password: String): Completable =
+    fun login(username: String, password: String, rememberCredentials: Boolean): Completable =
         Completable.create {
-            val result = model.login(username, password, true, true)
+            val result = model.login(username, password, rememberCredentials, rememberCredentials)
                 ?: return@create it.onError(InternalException("Ошибка авторизации: сервер временно недоступен"))
             if (result.cookie == null)
                 return@create it.onError(InternalException(result.message))

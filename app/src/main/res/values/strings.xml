@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MyBsuir</string>
-    <string name="login_prompt">Добро пожаловать в интегрированную информационную систему(ИИС)\n\n«БГУИР: Университет»</string>
-    <string name="error_stub">Error: \nRoses are red\nViolets are blue\nUnexpected curly bracket\nOn line 32</string>
+    <string name="login_prompt">Добро пожаловать в интегрированную информационную систему(ИИС)<br /> <br />«БГУИР: Университет»</string>
+    <string name="error_stub">Error: <br />Roses are red<br />Violets are blue<br />Unexpected curly bracket<br />On line 32</string>
     <string name="login_hint">
         Для входа в систему используйте учетные данные, что и для доступа в интернет (номер студенческого билета и пароль)
     </string>
@@ -58,4 +58,6 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
     <string name="references_title">Ссылки</string>
     <string name="no_references">У вас пока нет никаких ссылок...</string>
     <string name="timeout_error">Сервер не отвечает. Возможно технические неполадки в работе сервиса. Попробуйте повторить попытку позже</string>
+    <string name="dont_remember_label">Запомнить данные для автоматического входа.</string>
+    <string name="dont_remember_hint">Данные будут сохранены только на Вашем устройстве и не будут передаваться третьим лицам. Данные так же не будут доступны другим приложниям</string>
 </resources>
