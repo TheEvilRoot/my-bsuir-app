@@ -7,7 +7,7 @@ import com.theevilroot.mybsuir.common.asVisibility
 import kotlinx.android.synthetic.main.i_paper.view.*
 
 class PaperViewHolder(itemView: View) : SimpleViewHolder<Paper>(itemView) {
-    override fun bind(data: Paper) = with(itemView) {
+    override fun bind(data: Paper, isFirst: Boolean, isLast: Boolean) = with(itemView) {
         title.text = data.provisionPlace
         date.text = data.dateOrder
         seal.visibility = (data.status() == Paper.Status.PRINTED).asVisibility()

@@ -6,7 +6,7 @@ import java.lang.UnsupportedOperationException
 
 class ErrorViewHolder<T>(itemView: View) : SimpleViewHolder<T>(itemView) {
 
-    override fun bind(data: T) {
+    override fun bind(data: T, isFirst: Boolean, isLast: Boolean) {
         throw UnsupportedOperationException()
     }
 

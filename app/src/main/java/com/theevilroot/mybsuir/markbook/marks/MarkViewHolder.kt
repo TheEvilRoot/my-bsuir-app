@@ -16,7 +16,7 @@ class PassedMarkViewHolder(itemView: View): AbstractMarkViewHolder(itemView) {
     private val markValue by bind<TextView>(R.id.mark_value)
     private val markTeacher by bind<TextView>(R.id.mark_teacher)
 
-    override fun bind(data: Mark) = with(itemView) {
+    override fun bind(data: Mark, isFirst: Boolean, isLast: Boolean) = with(itemView) {
         markTitle.text = data.subject
         markValue.text = data.mark
         markTeacher.text = data.teacher
@@ -34,7 +34,7 @@ class PendingMarkViewHolder(itemView: View): AbstractMarkViewHolder(itemView) {
     private val markRetakes by bind<TextView>(R.id.mark_average_retakes)
     private val markRetakesLabel by bind<TextView>(R.id.mark_average_retakes_label)
 
-    override fun bind(data: Mark) {
+    override fun bind(data: Mark, isFirst: Boolean, isLast: Boolean) {
         markTitle.text = data.subject
         markAverageValue.text = String.format("%.2f", data.commonMark)
         markType.text = data.form

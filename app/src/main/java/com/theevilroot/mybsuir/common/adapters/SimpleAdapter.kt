@@ -5,18 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.theevilroot.mybsuir.common.data.Semester
-import com.theevilroot.mybsuir.markbook.semesters.SemestersAdapter
-import kotlin.math.max
-import kotlin.reflect.KFunction3
 
 open class SimpleAdapter<T, H: SimpleViewHolder<T>>(
     @LayoutRes
-    private val layout: Int,
-    private val holderFactory: (View) -> H
+    internal val layout: Int,
+    internal val holderFactory: (View) -> H
 ) : RecyclerView.Adapter<SimpleViewHolder<T>>() {
 
-    private var list: List<T> = listOf()
+    internal var list: List<T> = listOf()
 
     open fun setData(items: List<T>) {
         list = items
@@ -35,6 +31,6 @@ open class SimpleAdapter<T, H: SimpleViewHolder<T>>(
 
     override fun onBindViewHolder(holder: SimpleViewHolder<T>, position: Int) {
         val item = list[position]
-        holder.itemView.run { holder.bind(item) }
+        holder.itemView.run { holder.run { bind(item, position == 0, isLast = position == list.lastIndex) } }
     }
 }

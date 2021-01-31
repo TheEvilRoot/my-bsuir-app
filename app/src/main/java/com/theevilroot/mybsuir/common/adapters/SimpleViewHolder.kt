@@ -7,6 +7,6 @@ abstract class SimpleViewHolder<T>(
     itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 
-    abstract fun bind(data: T)
+    abstract fun bind(data: T, isFirst: Boolean, isLast: Boolean)
 
 }

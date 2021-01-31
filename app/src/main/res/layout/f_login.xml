@@ -109,10 +109,10 @@
             style="@style/Widget.MaterialComponents.Chip.Choice"
             android:checked="true"
             app:chipStrokeWidth="1dp"
-            app:chipStrokeColor="@color/c_chip_background"
-            app:chipBackgroundColor="@color/c_chip_background"
+            app:chipStrokeColor="@color/c_background_primary"
+            app:chipBackgroundColor="@color/c_background_primary"
             app:closeIconEnabled="false"
-            android:textColor="@color/c_chip_foreground"
+            android:textColor="@color/c_foreground_primary"
             tools:text="Не запоминать меня"/>
     </RelativeLayout>
 

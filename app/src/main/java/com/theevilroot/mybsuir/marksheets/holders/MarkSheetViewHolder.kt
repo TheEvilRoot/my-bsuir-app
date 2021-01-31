@@ -7,7 +7,7 @@ import com.theevilroot.mybsuir.common.data.MarkSheet
 import kotlinx.android.synthetic.main.i_sheet.view.*
 
 class MarkSheetViewHolder(itemView: View): SimpleViewHolder<MarkSheet>(itemView) {
-    override fun bind(data: MarkSheet) = with(itemView) {
+    override fun bind(data: MarkSheet, isFirst: Boolean, isLast: Boolean) = with(itemView) {
         title.text = data.subject.name
         date.text = "${data.term} курс"
         type.text = data.subject.lessonType

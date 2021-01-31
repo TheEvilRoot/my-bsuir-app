@@ -36,7 +36,7 @@ class MarksAdapter : RecyclerView.Adapter<AbstractMarkViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: AbstractMarkViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(data[position], position == 0, position == data.lastIndex)
     }
 
     override fun getItemCount(): Int {
