@@ -15,9 +15,9 @@ data class Paper(
     val rejectionReason: String?
 ) {
 
-    enum class Type (val value: String, @StringRes val hintRes: Int) {
-        COMMON("обычная", R.string.paper_type_all_hint),
-        SPECIAL("с гербовой печатью", R.string.paper_type_special_hint)
+    enum class Type (val value: String, val sealSummaryName: String, @StringRes val hintRes: Int) {
+        COMMON("обычная", "обычной", R.string.paper_type_all_hint),
+        SPECIAL("с гербовой печатью", "гербовой", R.string.paper_type_special_hint),
     }
 
     enum class Status(val value: Int, val description: String) {

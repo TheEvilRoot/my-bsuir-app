@@ -96,11 +96,8 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         }
 
         profile_logout.setOnClickListener {
-            val options = NavOptions.Builder()
-                    .setPopUpTo(R.id.fragment_login, true)
-                    .build()
-            findNavController().navigate(R.id.fragment_login,
-                    bundleOf("logout" to true), options)
+            findNavController().navigate(R.id.action_profile_logout,
+                    bundleOf("logout" to true))
         }
 
         updateData(true)
@@ -158,12 +155,12 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
 
         if (this is ProfileViewState.ProfileFilled) {
             with(profileInfo) {
-                profile_header_name.text = fullName
-                profile_title_name.text = fullName
+                profile_header_name.text = "Фамилия Имя"
+                profile_title_name.text = "Фамилия Имя"
 
-                profile_birth_date.text = birthDate
+                profile_birth_date.text = "01.01.2000"
                 profile_faculty.text = facultyString
-                profile_rate_bar.progress = rate
+                profile_rate_bar.progress = 5
                 profile_rate_bar.max = 10
 
                 Glide.with(context)

@@ -19,7 +19,14 @@
         android:id="@+id/fragment_profile"
         android:name="com.theevilroot.mybsuir.profile.ProfileFragment"
         android:label="ProfileFragment"
-        tools:layout="@layout/f_profile"/>
+        tools:layout="@layout/f_profile">
+        <action
+            android:id="@+id/action_profile_logout"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/fragment_login"
+            app:destination="@id/fragment_login"
+            app:launchSingleTop="true" />
+    </fragment>
     <fragment
         android:id="@+id/fragment_group"
         android:name="com.theevilroot.mybsuir.group.GroupFragment"

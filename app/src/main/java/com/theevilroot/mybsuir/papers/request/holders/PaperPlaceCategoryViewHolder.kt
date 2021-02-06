@@ -1,18 +1,17 @@
 package com.theevilroot.mybsuir.papers.request.holders
 
-import android.content.res.ColorStateList
 import android.view.View
 import android.widget.TextView
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.adapters.ChoiceViewHolder
-import com.theevilroot.mybsuir.common.data.Paper
+import com.theevilroot.mybsuir.common.data.PaperPlaceCategory
 
-class PaperTypeViewHolder(itemView: View) : ChoiceViewHolder<Paper.Type>(itemView) {
+class PaperPlaceCategoryViewHolder(itemView: View) : ChoiceViewHolder<PaperPlaceCategory>(itemView) {
 
-    override fun bind(data: Paper.Type, isFirst: Boolean, isLast: Boolean, isSelected: Boolean) = with(itemView) {
+    override fun bind(data: PaperPlaceCategory, isFirst: Boolean, isLast: Boolean, isSelected: Boolean) = with(itemView) {
         findViewById<TextView>(R.id.choose_item_label).let {
             it.isSelected = isSelected
-            it.text = data.value
+            it.text = data.type
         }
         findViewById<View>(R.id.choose_item_container).let {
             it.isSelected = isSelected

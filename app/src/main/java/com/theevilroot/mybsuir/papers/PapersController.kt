@@ -20,6 +20,7 @@ class PapersController (val model: IPapersModel) {
             Single.create<List<PaperPlaceCategory>> {
                 val places = model.getPlaces(allowCache = !forceUpdate)
                         ?: return@create it.onError(InternalException("Невозможно получить данные о справках"))
+                Thread.sleep(10000)
                 it.onSuccess(places)
             }.subscribeOn(Schedulers.io())
 

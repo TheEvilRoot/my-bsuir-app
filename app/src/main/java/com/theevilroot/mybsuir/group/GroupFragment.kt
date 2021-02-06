@@ -76,7 +76,7 @@ class GroupFragment : ModelDataFragment<GroupFragment.GroupViewState, Group>(R.l
 
         if (this is GroupViewState.GroupFilledState) {
             groupAdapter.setGroup(group)
-            group_title.text = "Группа ${group.number}"
+            group_title.text = "Группа 000000"
         }
     }
 

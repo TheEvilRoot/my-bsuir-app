@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:id="@+id/type_container"
+    android:id="@+id/choose_item_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,7 +8,7 @@
     android:backgroundTint="@color/c_background_primary">
 
     <TextView
-        android:id="@+id/type_name"
+        android:id="@+id/choose_item_label"
         android:textSize="16sp"
         android:textColor="@color/c_foreground_primary"
         android:textAlignment="center"

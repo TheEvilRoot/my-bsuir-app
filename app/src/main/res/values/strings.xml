@@ -54,9 +54,9 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
         %2$s</string>
     <string name="skills_title">Ключенвые навыки</string>
     <string name="info_title">Основная информация</string>
-    <string name="no_summary">Пока не указано никакой информации...</string>
+    <string name="no_summary">Пока не указано никакой информации…</string>
     <string name="references_title">Ссылки</string>
-    <string name="no_references">У вас пока нет никаких ссылок...</string>
+    <string name="no_references">У вас пока нет никаких ссылок…</string>
     <string name="timeout_error">Сервер не отвечает. Возможно технические неполадки в работе сервиса. Попробуйте повторить попытку позже</string>
     <string name="dont_remember_label">Запомнить данные для автоматического входа.</string>
     <string name="dont_remember_hint">Данные будут сохранены только на Вашем устройстве и не будут передаваться третьим лицам. Данные так же не будут доступны другим приложниям</string>
@@ -66,4 +66,6 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
     <string name="paper_type_special_hint">
         Справка с гербовой печатью справки нужны только для получения банковского кредита на обучение или справка из СППС.
     </string>
+    <string name="paper_request_summary">Справка с <b>%1$s</b> печатью <b>%2$s</b></string>
+    <string name="paper_destination_hint"><![CDATA[Для ввода собственного места назначения справки выберите Деканат -> иное]]></string>
 </resources>

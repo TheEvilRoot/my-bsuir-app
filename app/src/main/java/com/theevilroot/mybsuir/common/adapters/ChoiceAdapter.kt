@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 
-class ChoiceAdapter<T, BVH: ChoiceViewHolder<T>, VH: BVH, SVH: BVH>(
+open class ChoiceAdapter<T, BVH: ChoiceViewHolder<T>, VH: BVH, SVH: BVH>(
     @LayoutRes
     private val layoutRes: Int,
     @LayoutRes
@@ -22,18 +22,29 @@ class ChoiceAdapter<T, BVH: ChoiceViewHolder<T>, VH: BVH, SVH: BVH>(
     private var selectedPosition = -1
     private var data = listOf<T>()
 
+    var allowUnSelection = true
+        set(value) {
+            field = value
+            if (!value && selectedPosition < 0)
+                selectedPosition = 0
+            notifyDataSetChanged()
+        }
+    var allowInteraction: Boolean = true
+
     private fun notifySelectionChanged(index: Int) {
         if (index in 0 until itemCount)
             notifyItemChanged(index)
     }
 
     private fun toggleSelection(index: Int) {
-        if (selectedPosition == index)
+        if (!allowInteraction)
+            return
+        if (allowUnSelection && selectedPosition == index)
             clearSelection()
         else select(index)
     }
 
-    fun clearSelection() {
+    private fun clearSelection() {
         val oldSelection = selectedPosition
         selectedPosition = -1
         notifySelectionChanged(oldSelection)
@@ -42,6 +53,8 @@ class ChoiceAdapter<T, BVH: ChoiceViewHolder<T>, VH: BVH, SVH: BVH>(
     }
 
     fun select(index: Int) {
+        if (index < 0)
+            return
         if (index == selectedPosition)
             return
 
@@ -54,7 +67,7 @@ class ChoiceAdapter<T, BVH: ChoiceViewHolder<T>, VH: BVH, SVH: BVH>(
     }
 
     fun setData(items: List<T>) {
-        selectedPosition = -1
+        selectedPosition = if (allowUnSelection) -1 else 0
         data = items
         notifyDataSetChanged()
         onSelectChanged(-1, null)
