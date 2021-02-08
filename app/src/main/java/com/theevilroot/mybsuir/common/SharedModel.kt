@@ -1,6 +1,8 @@
 package com.theevilroot.mybsuir.common
 
 import android.content.Context
+import com.theevilroot.mybsuir.announcements.AnnouncementsModel
+import com.theevilroot.mybsuir.announcements.IAnnouncementsModel
 import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.group.GroupModel
 import com.theevilroot.mybsuir.group.IGroupModel
@@ -18,8 +20,9 @@ class SharedModel (
         private val papersModel: IPapersModel,
         private val groupModel: IGroupModel,
         private val markBookModel: IMarkBookModel,
-        private val markSheetsModel: IMarkSheetsModel
-): IProfileModel, IPapersModel, IGroupModel, IMarkBookModel, IMarkSheetsModel {
+        private val markSheetsModel: IMarkSheetsModel,
+        private val announcementsModel: IAnnouncementsModel
+): IProfileModel, IPapersModel, IGroupModel, IMarkBookModel, IMarkSheetsModel, IAnnouncementsModel {
 
     private fun requireNotMe(c: Any) {
         if (c is SharedModel)
@@ -32,6 +35,7 @@ class SharedModel (
         requireNotMe(groupModel)
         requireNotMe(markBookModel)
         requireNotMe(markSheetsModel)
+        requireNotMe(announcementsModel)
     }
 
     constructor(apiService: ApiService, store: CredentialsStore, context: Context): this(
@@ -39,7 +43,8 @@ class SharedModel (
             PapersModel(apiService, store, context),
             GroupModel(apiService, store, context),
             MarkBookModel(apiService, store, context),
-            MarkSheetsModel(apiService, store, context)
+            MarkSheetsModel(apiService, store, context),
+            AnnouncementsModel(apiService, store, context)
     )
 
     override fun getPersonalCV(allowCache: Boolean): PersonalCV? {
@@ -68,5 +73,9 @@ class SharedModel (
 
     override fun getMarkSheets(allowCache: Boolean): List<MarkSheet>? {
         return markSheetsModel.getMarkSheets(allowCache)
+    }
+
+    override fun getAnnouncements(allowCache: Boolean): List<Announcement>? {
+        return announcementsModel.getAnnouncements(allowCache)
     }
 }

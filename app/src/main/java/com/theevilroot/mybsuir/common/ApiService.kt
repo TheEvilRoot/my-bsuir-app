@@ -32,4 +32,7 @@ interface ApiService {
 
     @GET("portal/markSheet")
     fun markSheet(@Header("Cookie") token: String): Call<List<MarkSheet>>
+
+    @GET("portal/announcement")
+    fun announcements(@Header("Cookie") token: String): Call<List<Announcement>>
 }

@@ -78,7 +78,7 @@ class MarkBookFragment : ModelDataFragment<MarkBookFragment.MarkBookViewState, M
         markbook_title.alpha = alpha
         markbook_subtitle.alpha = alpha
         markbook_average_mark.alpha = alpha
-    }
+    } ?: Unit
 
     private fun View.updateSemesterHeader(item: Semester) {
         markbook_title.text = "${item.index} семестр"

@@ -53,4 +53,9 @@
         tools:layout="@layout/f_paper_request"
         android:label="PaperRequestFragment" />
 
+    <fragment android:id="@+id/fragment_announcements"
+        android:name="com.theevilroot.mybsuir.announcements.AnnouncementsFragment"
+        android:label="AnnouncementsFragment"
+        tools:layout="@layout/f_announcements" />
+
 </navigation>
