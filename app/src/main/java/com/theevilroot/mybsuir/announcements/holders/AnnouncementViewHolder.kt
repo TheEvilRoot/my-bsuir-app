@@ -15,7 +15,7 @@ class AnnouncementViewHolder(itemView: View) : SimpleViewHolder<Announcement>(it
 
 
         Glide.with(context)
-                .load(data.photoUrl)
+                .load(data.photoUrl ?: "https://iis.bsuir.by/assets/default-photo.gif")
                 .into(ann_author_image)
     }
 
