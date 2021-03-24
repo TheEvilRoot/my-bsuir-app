@@ -155,12 +155,12 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
 
         if (this is ProfileViewState.ProfileFilled) {
             with(profileInfo) {
-                profile_header_name.text = "Фамилия Имя"
-                profile_title_name.text = "Фамилия Имя"
+                profile_header_name.text = shortName
+                profile_title_name.text = shortName
 
-                profile_birth_date.text = "01.01.2000"
+                profile_birth_date.text = birthDate
                 profile_faculty.text = facultyString
-                profile_rate_bar.progress = 5
+                profile_rate_bar.progress = rate
                 profile_rate_bar.max = 10
 
                 Glide.with(context)

@@ -14,34 +14,34 @@ abstract class AbstractGroupMemberViewHolder (itemView: View): RecyclerView.View
 
 class SpecialGroupMemberViewHolder(itemView: View): AbstractGroupMemberViewHolder(itemView) {
     override fun bind(member: GroupMember): Unit = with(itemView) {
-        val specialMember = member as SpecialGroupMember
+        member as SpecialGroupMember
 
-        member_name.text = "Фамилия Имя Отчество"
+        member_name.text = member.fullName
 
         member_email.visibility = member.email.isNotEmpty().asVisibility()
-        member_email.text = "special.example@example.com"
+        member_email.text = member.email
 
         member_phone.visibility = member.phone.isNotEmpty().asVisibility()
-        member_phone.text = "+375 (29) 000 00 00"
+        member_phone.text = member.phone
 
         member_position.visibility = member.position.isNotEmpty().asVisibility()
         member_position.text = member.position
 
         Glide.with(context)
-                .load(specialMember.photoUrl)
+                .load(member.photoUrl)
                 .into(member_image)
     }
 }
 
 class GroupMemberViewHolder(itemView: View): AbstractGroupMemberViewHolder(itemView) {
     override fun bind(member: GroupMember): Unit = with(itemView) {
-        member_name.text = "Фамилия Имя Отчество"
+        member_name.text = member.fullName
 
         member_email.visibility = member.email.isNotEmpty().asVisibility()
-        member_email.text = "example@example.com"
+        member_email.text = member.email
 
         member_phone.visibility = member.phone.isNotEmpty().asVisibility()
-        member_phone.text = "+375 (29) 000 00 00"
+        member_phone.text = member.phone
 
         member_position.visibility = member.position.isNotEmpty().asVisibility()
         member_position.text = member.position

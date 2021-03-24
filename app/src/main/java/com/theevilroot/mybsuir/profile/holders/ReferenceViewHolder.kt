@@ -7,7 +7,7 @@ import kotlinx.android.synthetic.main.i_reference.view.*
 
 class ReferenceViewHolder(itemView: View) : SimpleViewHolder<Reference>(itemView) {
     override fun bind(data: Reference, isFirst: Boolean, isLast: Boolean) = with(itemView) {
-        url.text = "https://example.com/blah"
-        title.text = "Название"
+        url.text = data.reference
+        title.text = data.name
     }
 }
