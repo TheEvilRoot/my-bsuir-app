@@ -14,6 +14,8 @@ import com.theevilroot.mybsuir.papers.IPapersModel
 import com.theevilroot.mybsuir.papers.PapersModel
 import com.theevilroot.mybsuir.profile.IProfileModel
 import com.theevilroot.mybsuir.profile.ProfileModel
+import com.theevilroot.mybsuir.schedule.IScheduleModel
+import com.theevilroot.mybsuir.schedule.ScheduleModel
 
 class SharedModel (
         private val profileModel: IProfileModel,
@@ -21,8 +23,15 @@ class SharedModel (
         private val groupModel: IGroupModel,
         private val markBookModel: IMarkBookModel,
         private val markSheetsModel: IMarkSheetsModel,
-        private val announcementsModel: IAnnouncementsModel
-): IProfileModel, IPapersModel, IGroupModel, IMarkBookModel, IMarkSheetsModel, IAnnouncementsModel {
+        private val announcementsModel: IAnnouncementsModel,
+        private val scheduleModel: IScheduleModel
+) : IProfileModel,
+    IPapersModel,
+    IGroupModel,
+    IMarkBookModel,
+    IMarkSheetsModel,
+    IAnnouncementsModel,
+    IScheduleModel {
 
     private fun requireNotMe(c: Any) {
         if (c is SharedModel)
@@ -36,6 +45,7 @@ class SharedModel (
         requireNotMe(markBookModel)
         requireNotMe(markSheetsModel)
         requireNotMe(announcementsModel)
+        requireNotMe(scheduleModel)
     }
 
     constructor(apiService: ApiService, store: CredentialsStore, context: Context): this(
@@ -44,7 +54,8 @@ class SharedModel (
             GroupModel(apiService, store, context),
             MarkBookModel(apiService, store, context),
             MarkSheetsModel(apiService, store, context),
-            AnnouncementsModel(apiService, store, context)
+            AnnouncementsModel(apiService, store, context),
+            ScheduleModel(apiService, store, context)
     )
 
     override fun getPersonalCV(allowCache: Boolean): PersonalCV? {
@@ -77,5 +88,9 @@ class SharedModel (
 
     override fun getAnnouncements(allowCache: Boolean): List<Announcement>? {
         return announcementsModel.getAnnouncements(allowCache)
+    }
+
+    override fun getDaySchedule(allowCache: Boolean): DaySchedule? {
+        return scheduleModel.getDaySchedule(allowCache)
     }
 }

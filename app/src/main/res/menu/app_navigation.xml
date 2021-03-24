@@ -21,4 +21,8 @@
         android:icon="@drawable/ic_round_comment"
         android:title="Объявления" />
 
+    <item
+        android:id="@+id/fragment_home_schedule"
+        android:title="Пары" />
+
 </menu>

@@ -58,4 +58,9 @@
         android:label="AnnouncementsFragment"
         tools:layout="@layout/f_announcements" />
 
+    <fragment android:id="@+id/fragment_home_schedule"
+        android:name="com.theevilroot.mybsuir.schedule.HomeScheduleFragment"
+        android:label="HomeScheduleFragment"
+        tools:layout="@layout/f_home_schedule" />
+
 </navigation>
