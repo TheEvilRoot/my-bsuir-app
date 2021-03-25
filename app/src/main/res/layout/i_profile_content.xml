@@ -124,6 +124,16 @@
         android:background="@drawable/b_block"
         android:padding="8dp">
 
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/info_edit"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:srcCompat="@drawable/ic_round_edit_24"
+            android:background="@android:color/transparent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:tint="@color/colorPrimaryDark"/>
+
         <!-- should i name it `bio`? -->
         <!-- or `summary` as api does? -->
         <TextView
@@ -135,14 +145,15 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/profile_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/info_title"
             android:layout_marginHorizontal="4dp"
             android:layout_marginTop="8dp"
-            tools:text="@string/no_summary" />
+            style="@style/Widget.AppCompat.EditText"
+            tools:hint="@string/no_summary" />
 
     </RelativeLayout>
 
@@ -155,6 +166,16 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/b_block"
         android:padding="8dp">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/reference_add"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:srcCompat="@drawable/ic_round_add_24"
+            android:background="@android:color/transparent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:tint="@color/colorPrimaryDark"/>
 
         <TextView
             android:id="@+id/references_title"

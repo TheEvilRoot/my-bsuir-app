@@ -1,7 +1,10 @@
 package com.theevilroot.mybsuir.profile
 
+import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.NavOptions
@@ -12,11 +15,13 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.SharedModel
+import com.theevilroot.mybsuir.common.adapters.AddableAdapter
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.profile.data.BadgeType
 import com.theevilroot.mybsuir.profile.holders.ReferenceViewHolder
 import com.theevilroot.mybsuir.profile.holders.SkillsViewHolder
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -31,6 +36,7 @@ import kotlin.math.abs
 class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, ProfileInfo>(R.layout.f_profile) {
 
     sealed class ProfileViewState {
+
         abstract val headerContentVisibility: Boolean
         abstract val headerProgressVisibility: Boolean
         abstract val headerErrorVisibility: Boolean
@@ -66,7 +72,8 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
 
     private val controller by lazy { ProfileController(model) }
 
-    private val skillsAdapter by lazy { SimpleAdapter(R.layout.i_skill, ::SkillsViewHolder) }
+    private val skillsAdapter by lazy { AddableAdapter(R.layout.i_skill, R.layout.i_skill_add,
+            ::SkillsViewHolder, ::SkillsViewHolder, ::onSkillAddClick) }
     private val referencesAdapter by lazy { SimpleAdapter(R.layout.i_reference, ::ReferenceViewHolder) }
 
     override fun View.onView() {
@@ -103,23 +110,17 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         updateData(true)
     }
 
+    private fun getCountUpdate(type: BadgeType, f: () -> Single<Int>) {
+        f().observeOn(AndroidSchedulers.mainThread()).subscribe({
+            if (it == 0)
+                updateBadge(type)
+            else updateBadge(type, it)
+        }, { updateBadge(type) })
+    }
+
     override fun onDataUpdated(data: ProfileInfo) {
-        controller.updatePapersCount().observeOn(AndroidSchedulers.mainThread()).subscribe({
-            if (it == 0)
-                clearBadge(papers_badge)
-            else setBadge(papers_badge, it)
-        }, {
-            it.printStackTrace()
-            clearBadge(papers_badge)
-        })
-        controller.updateSheetsCount().observeOn(AndroidSchedulers.mainThread()).subscribe({
-            if (it == 0)
-                clearBadge(sheets_badge)
-            else setBadge(sheets_badge, it)
-        }, {
-            it.printStackTrace()
-            clearBadge(sheets_badge)
-        })
+        getCountUpdate(BadgeType.PAPERS, controller::updatePapersCount)
+        getCountUpdate(BadgeType.SHEETS, controller::updateSheetsCount)
     }
 
     override fun getDataUpdate(): Single<ProfileInfo> =
@@ -141,7 +142,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         profile_error.visibility = headerErrorVisibility.asVisibility()
         profile_summary.visibility = headerContentVisibility.asVisibility()
 
-        arrayOf(button_papers, button_exam_sheets, button_settings)
+        arrayOf(button_papers, button_exam_sheets, button_settings, info_edit, reference_add)
             .forEach { it.isEnabled = buttonsAvailable }
 
         val params = profile_collapsing_toolbar.layoutParams as AppBarLayout.LayoutParams
@@ -152,6 +153,11 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
             params.scrollFlags = 0
             profile_app_bar.setExpanded(true, true)
         }
+
+        // On every state update
+        // we'll need to reset info edit state
+        // i guess..
+        setInfoViewState()
 
         if (this is ProfileViewState.ProfileFilled) {
             with(profileInfo) {
@@ -172,13 +178,33 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
                 referencesAdapter.setData(references)
                 profile_no_references.visibility = references.isEmpty().asVisibility()
 
-                profile_summary.text = summary ?: getString(R.string.no_summary)
+                if (summary == null) {
+                    profile_summary.text?.clear()
+                    profile_summary.setHint(R.string.no_summary)
+                } else {
+                    profile_summary.setText(summary)
+                }
+
             }
+
         }
 
         if (this is ProfileViewState.ProfileError) {
             profile_error_message.text = message
             profile_refresh.setOnClickListener(retryHandler)
+        }
+
+    }
+
+    private fun updateBadge(type: BadgeType, value: Int? = null) = view?.run {
+        val view = when (type) {
+            BadgeType.PAPERS -> papers_badge
+            BadgeType.SHEETS -> sheets_badge
+        }
+        if (value == null) {
+            clearBadge(view)
+        } else {
+            setBadge(view, value)
         }
     }
 
@@ -190,4 +216,29 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
     private fun clearBadge(badge: TextView) {
         badge.visibility = View.GONE
     }
+
+    private fun setInfoEditState() {
+        profile_summary.inputType =
+                InputType.TYPE_TEXT_FLAG_MULTI_LINE or
+                        InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+        profile_summary.setTextIsSelectable(true)
+        profile_summary.setBackgroundResource(com.google.android.material.R.drawable.abc_edit_text_material)
+
+        info_edit.setImageResource(R.drawable.ic_round_check_24)
+        info_edit.setOnClickListener { setInfoViewState() }
+    }
+
+    private fun setInfoViewState() {
+        profile_summary.inputType = InputType.TYPE_NULL
+        profile_summary.setTextIsSelectable(false)
+        profile_summary.setBackgroundResource(0)
+
+        info_edit.setImageResource(R.drawable.ic_round_edit_24)
+        info_edit.setOnClickListener { setInfoEditState() }
+    }
+
+    private fun onSkillAddClick(view: View) {
+        Log.d("ASD", "ASDASD")
+    }
+
 }
