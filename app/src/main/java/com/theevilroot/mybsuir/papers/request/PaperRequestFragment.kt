@@ -150,8 +150,8 @@ class PaperRequestFragment : ModelDataFragment<PaperRequestFragment.PaperRequest
     override fun getLoadingState(): PaperRequestViewState =
             PaperRequestViewState.LoadingState
 
-    override fun getDataUpdate(): Single<List<PaperPlaceCategory>> =
-            controller.updatePlaces(false)
+    override fun getDataUpdate(forceUpdate: Boolean): Single<List<PaperPlaceCategory>> =
+            controller.updatePlaces(forceUpdate)
 
     override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): PaperRequestViewState =
             PaperRequestViewState.ErrorState("Error: $msg")

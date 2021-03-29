@@ -11,6 +11,8 @@ class ProfileModel(api: ApiService, store: CredentialsStore, applicationContext:
     private var personalCvCache: PersonalCV? = null
     private var personalInformationCache: PersonalInformation? = null
 
+    private var availableSkills: List<Skill>? = null
+
     override fun getPersonalCV(allowCache: Boolean): PersonalCV? {
         return apiCall(ApiService::personalCV, if (allowCache) personalCvCache else null)
                 ?.apply { personalCvCache = this }
@@ -19,5 +21,22 @@ class ProfileModel(api: ApiService, store: CredentialsStore, applicationContext:
     override fun getPersonalInformation(allowCache: Boolean): PersonalInformation? {
         return apiCall(ApiService::personalInformation, if (allowCache) personalInformationCache else null)
                 ?.apply { personalInformationCache = this }
+    }
+
+    override fun updateAvailableSkills(allowCache: Boolean): List<Skill> {
+        return apiCall(ApiService::availableSkills, if (allowCache) availableSkills else null).also {
+            availableSkills = it
+        } ?: emptyList()
+    }
+
+    override fun newSkill(data: NewSkill): Skill? {
+        return apiCall({ api.newSkill(it, data) }, null)?.also { skill ->
+            availableSkills = availableSkills?.let { it + skill} ?: emptyList()
+        }
+    }
+
+    override fun addSkill(skill: Skill): Skill? {
+        return apiCall({ api.addSkill(it, skill) }, null)
+            ?.let { skill }
     }
 }

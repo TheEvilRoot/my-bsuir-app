@@ -77,7 +77,7 @@ class PapersFragment : ModelDataFragment<PapersFragment.PapersViewState, List<Pa
     override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): PapersViewState =
             PapersViewState.PapersFailure(getImageForError(it), msg, retryAction)
 
-    override fun getDataUpdate(): Single<List<Paper>> =
+    override fun getDataUpdate(forceUpdate: Boolean): Single<List<Paper>> =
             controller.updatePapers(true)
 
     override fun View.applyState(newState: PapersViewState) = with(newState) {

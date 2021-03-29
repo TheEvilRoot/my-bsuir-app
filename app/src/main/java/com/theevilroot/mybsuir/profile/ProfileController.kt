@@ -1,11 +1,7 @@
 package com.theevilroot.mybsuir.profile
 
 import com.theevilroot.mybsuir.common.SharedModel
-import com.theevilroot.mybsuir.common.data.InternalException
-import com.theevilroot.mybsuir.common.data.MarkSheet
-import com.theevilroot.mybsuir.common.data.NoCredentialsException
-import com.theevilroot.mybsuir.common.data.Paper
-import com.theevilroot.mybsuir.login.LoginModel
+import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -51,5 +47,28 @@ class ProfileController (
                     ?: return@create emitter.onSuccess(0)
             emitter.onSuccess(sheets.count { it.status() != MarkSheet.Status.PRINTED })
         }.subscribeOn(Schedulers.io())
+
+    fun suggestSkills(text: String, strict: Boolean): Single<List<Skill>> =
+            Single.create<List<Skill>> { emitter ->
+                val data = model.updateAvailableSkills(true)
+                emitter.onSuccess(data.filter {
+                    if (strict)
+                        it.name.toLowerCase().startsWith(text.toLowerCase())
+                    else it.name.toLowerCase().contains(text.toLowerCase())
+                })
+            }.subscribeOn(Schedulers.io())
+
+    fun submitSkill(skillName: String): Completable =
+        Completable.create {
+            val data = model.updateAvailableSkills(true)
+            val skill = skillName.trim()
+            val available = data.firstOrNull { it.name.equals(skill, ignoreCase=true) }
+                ?: model.newSkill(NewSkill(skill))
+                ?: return@create it.onError(InternalException("Неудалось добавить новый навык"))
+
+            model.addSkill(available)
+            it.onComplete()
+        }.subscribeOn(Schedulers.io())
+
 
 }

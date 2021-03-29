@@ -27,6 +27,10 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -50,6 +54,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.google.android:flexbox:2.0.1'
     implementation 'pl.hypeapp:materialtimelineview:1.1'
+    implementation 'com.afollestad.material-dialogs:core:3.2.1'
+    implementation 'com.afollestad.material-dialogs:bottomsheets:3.2.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     testImplementation 'org.mockito:mockito-all:2.0.2-beta'
     testImplementation 'junit:junit:4.13.1'

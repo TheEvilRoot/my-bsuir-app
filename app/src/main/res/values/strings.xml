@@ -68,4 +68,5 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
     </string>
     <string name="paper_request_summary">Справка с <b>%1$s</b> печатью <b>%2$s</b></string>
     <string name="paper_destination_hint"><![CDATA[Для ввода собственного места назначения справки выберите Деканат -> иное]]></string>
+    <string name="skill_add_title">Добавление навыка</string>
 </resources>

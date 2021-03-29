@@ -25,11 +25,11 @@ abstract class ModelDataFragment<State, MT>(@LayoutRes layoutRes: Int) : BaseFra
     protected abstract fun getFilledState(it: MT): State
     protected abstract fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): State
 
-    protected abstract fun getDataUpdate(): Single<MT>
+    protected abstract fun getDataUpdate(forceUpdate: Boolean): Single<MT>
 
-    protected fun View.updateData(useCurrentCredentials: Boolean) {
+    protected fun View.updateData(useCurrentCredentials: Boolean, forceUpdate: Boolean = false) {
         applyState(getLoadingState())
-        cacheController.preloadCacheAndCall(getDataUpdate()
+        cacheController.preloadCacheAndCall(getDataUpdate(forceUpdate)
                 .observeOn(AndroidSchedulers.mainThread()), useCurrentCredentials)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ dataUpdateHandler(it) }) {

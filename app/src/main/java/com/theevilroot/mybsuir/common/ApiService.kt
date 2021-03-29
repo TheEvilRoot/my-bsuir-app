@@ -1,6 +1,7 @@
 package com.theevilroot.mybsuir.common
 
 import com.theevilroot.mybsuir.common.data.*
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -33,6 +34,16 @@ interface ApiService {
     @GET("portal/announcement")
     fun announcements(@Header("Cookie") token: String): Call<List<Announcement>>
 
-    @GET("https://journal.bsuir.by/api/v1/portal/schedule/gradebook?date=Fri%20Feb%2012%202021")
+    @GET("portal/schedule/gradebook?date=Fri%20Feb%2012%202021")
     fun daySchedule(@Header("Cookie") token: String): Call<DaySchedule>
+
+    @GET("portal/skills")
+    fun availableSkills(@Header("Cookie") token: String): Call<List<Skill>>
+
+    @PUT("portal/addSkill")
+    fun newSkill(@Header("Cookie") token: String, @Body body: NewSkill): Call<Skill>
+
+    @POST("portal/skill")
+    fun addSkill(@Header("Cookie") token: String, @Body skill: Skill): Call<ResponseBody>
+
 }

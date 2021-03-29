@@ -59,8 +59,8 @@ class GroupFragment : ModelDataFragment<GroupFragment.GroupViewState, Group>(R.l
     override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): GroupViewState =
             GroupViewState.GroupFailedState(getImageForError(it), msg, retryAction)
 
-    override fun getDataUpdate(): Single<Group> =
-            controller.updateGroupInfo(false)
+    override fun getDataUpdate(forceUpdate: Boolean): Single<Group> =
+            controller.updateGroupInfo(forceUpdate)
 
     override fun View.applyState(newState: GroupViewState) = with(newState) {
         group_view.visibility = groupViewVisibility.asVisibility()

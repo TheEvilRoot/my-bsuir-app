@@ -54,7 +54,7 @@ class HomeScheduleFragment : ModelDataFragment<HomeScheduleFragment.HomeSchedule
     ): HomeScheduleViewState =
         HomeScheduleViewState.Failed(msg, getImageForError(it), retryAction)
 
-    override fun getDataUpdate(): Single<DaySchedule> =
+    override fun getDataUpdate(forceUpdate: Boolean): Single<DaySchedule> =
         controller.updateTodaySchedule(true)
 
     override fun View.applyState(newState: HomeScheduleViewState) = with(newState) {

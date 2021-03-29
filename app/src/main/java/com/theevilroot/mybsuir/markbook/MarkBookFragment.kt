@@ -65,8 +65,8 @@ class MarkBookFragment : ModelDataFragment<MarkBookFragment.MarkBookViewState, M
     override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): MarkBookViewState =
             MarkBookViewState.MarkBookFailed(msg, retryAction)
 
-    override fun getDataUpdate(): Single<MarkBook> =
-            controller.updateMarkBook(false)
+    override fun getDataUpdate(forceUpdate: Boolean): Single<MarkBook> =
+            controller.updateMarkBook(forceUpdate)
 
     private fun onItemIndexChanged(index: Int) {
         semestersAdapter.data.getOrNull(index)?.let {

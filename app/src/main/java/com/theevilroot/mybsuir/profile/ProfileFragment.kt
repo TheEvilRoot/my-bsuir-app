@@ -1,31 +1,46 @@
 package com.theevilroot.mybsuir.profile
 
+import android.app.Dialog
 import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
+import androidx.core.widget.addTextChangedListener
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.LayoutMode
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.afollestad.materialdialogs.callbacks.onDismiss
+import com.afollestad.materialdialogs.callbacks.onPreShow
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
+import com.google.android.material.dialog.MaterialDialogs
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.SharedModel
 import com.theevilroot.mybsuir.common.adapters.AddableAdapter
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
+import com.theevilroot.mybsuir.common.adapters.SimpleRangedAdapter
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.common.asVisibility
 import com.theevilroot.mybsuir.profile.data.BadgeType
 import com.theevilroot.mybsuir.profile.holders.ReferenceViewHolder
+import com.theevilroot.mybsuir.profile.holders.SkillSuggestionViewHolder
 import com.theevilroot.mybsuir.profile.holders.SkillsViewHolder
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.d_skill_add.view.*
 import kotlinx.android.synthetic.main.f_profile.view.*
 import kotlinx.android.synthetic.main.i_profile_content.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
@@ -75,6 +90,10 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
     private val skillsAdapter by lazy { AddableAdapter(R.layout.i_skill, R.layout.i_skill_add,
             ::SkillsViewHolder, ::SkillsViewHolder, ::onSkillAddClick) }
     private val referencesAdapter by lazy { SimpleAdapter(R.layout.i_reference, ::ReferenceViewHolder) }
+    private val skillsSuggestionAdapter by lazy { SimpleRangedAdapter(R.layout.i_skill,
+        ::SkillSuggestionViewHolder) }
+
+    private var skillAddDialog: Dialog? = null
 
     override fun View.onView() {
         with(skills_view) {
@@ -123,8 +142,8 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         getCountUpdate(BadgeType.SHEETS, controller::updateSheetsCount)
     }
 
-    override fun getDataUpdate(): Single<ProfileInfo> =
-            controller.updateProfileInfo(false)
+    override fun getDataUpdate(forceUpdate: Boolean): Single<ProfileInfo> =
+            controller.updateProfileInfo(forceUpdate)
 
     override fun getLoadingState(): ProfileViewState =
             ProfileViewState.ProfileLoading
@@ -237,8 +256,65 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         info_edit.setOnClickListener { setInfoEditState() }
     }
 
-    private fun onSkillAddClick(view: View) {
-        Log.d("ASD", "ASDASD")
+    private fun onSkillAddClick(v: View) = view?.run {
+        showSkillAddDialog()
+    }
+
+    private fun View.showSkillAddDialog() {
+        skillAddDialog?.dismiss()
+
+        val compositeDisposable = CompositeDisposable()
+        skillAddDialog = MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).apply {
+            customView(R.layout.d_skill_add)
+            title(R.string.skill_add_title)
+            onPreShow { skillsSuggestionAdapter.setData(emptyList()) }
+            onDismiss { compositeDisposable.dispose() }
+            show {
+                getCustomView().initSkillAddDialog(this, compositeDisposable)
+            }
+        }
+    }
+
+    private fun View.initSkillAddDialog(dialog: MaterialDialog, compositeDisposable: CompositeDisposable) {
+        skill_add_suggestions.layoutManager = LinearLayoutManager(context,
+            LinearLayoutManager.HORIZONTAL, false)
+        skill_add_suggestions.adapter = skillsSuggestionAdapter
+        skill_add_hint.visibility = View.VISIBLE
+        skillsSuggestionAdapter.onItemClick = {
+            skill_add_field.setText(it.name) }
+        skill_add_submit.isEnabled = false
+        skill_add_field.addTextChangedListener {
+            val text = it?.toString()
+            if (text != null) {
+                controller.suggestSkills(text, true)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ data ->
+                        skill_add_hint.visibility = View.GONE
+                        skillsSuggestionAdapter.setData(data)
+                    }) { }.let(compositeDisposable::add)
+
+            }
+            skill_add_submit.isEnabled = text != null
+        }
+        skill_add_submit.setOnClickListener {
+            val text = skill_add_field.text?.toString()
+                ?: return@setOnClickListener
+            skill_add_submit.isEnabled = false
+            controller.submitSkill(text)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    dialog.dismiss()
+                    this@ProfileFragment.view?.updateData(
+                        useCurrentCredentials = true,
+                        forceUpdate = true
+                    )
+                }) {
+                    skill_add_hint.visibility = View.VISIBLE
+                    skill_add_hint.text = it.localizedMessage
+                    skill_add_submit.isEnabled = true
+                    skillsSuggestionAdapter.setData(emptyList())
+                }
+        }
     }
 
 }

@@ -93,4 +93,16 @@ class SharedModel (
     override fun getDaySchedule(allowCache: Boolean): DaySchedule? {
         return scheduleModel.getDaySchedule(allowCache)
     }
+
+    override fun updateAvailableSkills(allowCache: Boolean): List<Skill> {
+        return profileModel.updateAvailableSkills(allowCache)
+    }
+
+    override fun addSkill(skill: Skill): Skill? {
+        return profileModel.addSkill(skill)
+    }
+
+    override fun newSkill(data: NewSkill): Skill? {
+        return profileModel.newSkill(data)
+    }
 }

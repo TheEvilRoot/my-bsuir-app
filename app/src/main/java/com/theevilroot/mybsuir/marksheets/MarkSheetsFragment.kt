@@ -68,7 +68,7 @@ class MarkSheetsFragment: ModelDataFragment<MarkSheetsFragment.MarkSheetsViewSta
     override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): MarkSheetsViewState =
             MarkSheetsViewState.Failure(this.getImageForError(it), msg, retryAction)
 
-    override fun getDataUpdate(): Single<List<MarkSheet>> {
+    override fun getDataUpdate(forceUpdate: Boolean): Single<List<MarkSheet>> {
         return controller.updateMarkBook(true)
     }
 

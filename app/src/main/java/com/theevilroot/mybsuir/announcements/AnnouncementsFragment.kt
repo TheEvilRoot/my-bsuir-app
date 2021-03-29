@@ -62,7 +62,7 @@ class AnnouncementsFragment : ModelDataFragment<AnnouncementsFragment.Announceme
     override fun getErrorState(it: Throwable, msg: String, retryAction: View.() -> Unit): AnnouncementsViewState =
             AnnouncementsViewState.Failure(msg, getImageForError(it), retryAction)
 
-    override fun getDataUpdate(): Single<List<Announcement>> =
+    override fun getDataUpdate(forceUpdate: Boolean): Single<List<Announcement>> =
             controller.updateAnnouncements(true)
 
     override fun View.applyState(newState: AnnouncementsViewState) = with(newState) {
