@@ -2,7 +2,7 @@ package com.theevilroot.mybsuir.marksheets.holders
 
 import android.view.View
 import com.theevilroot.mybsuir.common.adapters.SimpleViewHolder
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 import com.theevilroot.mybsuir.common.data.MarkSheet
 import kotlinx.android.synthetic.main.i_sheet.view.*
 

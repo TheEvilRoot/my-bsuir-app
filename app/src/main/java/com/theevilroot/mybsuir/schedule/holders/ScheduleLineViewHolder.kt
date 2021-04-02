@@ -1,7 +1,7 @@
 package com.theevilroot.mybsuir.schedule.holders
 
 import android.view.View
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 import com.theevilroot.mybsuir.schedule.data.ScheduleItem
 import kotlinx.android.synthetic.main.i_schedule_entry_line.view.*
 import pl.hypeapp.materialtimelineview.MaterialTimelineView

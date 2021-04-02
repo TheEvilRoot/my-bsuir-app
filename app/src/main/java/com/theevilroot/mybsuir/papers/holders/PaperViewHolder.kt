@@ -3,7 +3,7 @@ package com.theevilroot.mybsuir.papers.holders
 import android.view.View
 import com.theevilroot.mybsuir.common.adapters.SimpleViewHolder
 import com.theevilroot.mybsuir.common.data.Paper
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 import kotlinx.android.synthetic.main.i_paper.view.*
 
 class PaperViewHolder(itemView: View) : SimpleViewHolder<Paper>(itemView) {

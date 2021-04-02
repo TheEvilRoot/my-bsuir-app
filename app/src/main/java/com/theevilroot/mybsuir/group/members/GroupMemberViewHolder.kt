@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.theevilroot.mybsuir.common.data.GroupMember
 import com.theevilroot.mybsuir.common.data.SpecialGroupMember
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 import kotlinx.android.synthetic.main.i_group_special_member.view.*
 
 abstract class AbstractGroupMemberViewHolder (itemView: View): RecyclerView.ViewHolder(itemView) {

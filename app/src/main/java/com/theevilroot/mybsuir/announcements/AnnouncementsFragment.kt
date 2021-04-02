@@ -8,7 +8,7 @@ import com.theevilroot.mybsuir.announcements.holders.AnnouncementViewHolder
 import com.theevilroot.mybsuir.common.adapters.ErrorAwareAdapter
 import com.theevilroot.mybsuir.common.adapters.ErrorDescriptor
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 import com.theevilroot.mybsuir.common.data.Announcement
 import io.reactivex.rxjava3.core.Single
 import kotlinx.android.synthetic.main.f_announcements.view.*

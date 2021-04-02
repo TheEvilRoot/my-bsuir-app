@@ -70,5 +70,9 @@ class ProfileController (
             it.onComplete()
         }.subscribeOn(Schedulers.io())
 
-
+    fun updateSummary(text: String): Completable =
+            Completable.create {
+                model.updateSummary(text)
+                it.onComplete()
+            }.subscribeOn(Schedulers.io())
 }

@@ -5,7 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 import com.theevilroot.mybsuir.group.data.Group
 import com.theevilroot.mybsuir.group.members.GroupMembersAdapter
 import io.reactivex.rxjava3.core.Single

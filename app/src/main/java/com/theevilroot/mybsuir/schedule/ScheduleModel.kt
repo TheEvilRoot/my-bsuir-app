@@ -5,6 +5,7 @@ import com.theevilroot.mybsuir.common.ApiModel
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.data.DaySchedule
+import java.util.*
 
 class ScheduleModel (
     api: ApiService,
@@ -12,7 +13,7 @@ class ScheduleModel (
     context: Context
 ): ApiModel(api, store, context), IScheduleModel {
 
-    override fun getDaySchedule(allowCache: Boolean): DaySchedule? =
-        apiCall(ApiService::daySchedule, null)
+    override fun getDaySchedule(allowCache: Boolean, date: Date): DaySchedule? =
+        apiCall({ api.daySchedule(it, "Fri Feb 12 2021") }, null)
 
 }

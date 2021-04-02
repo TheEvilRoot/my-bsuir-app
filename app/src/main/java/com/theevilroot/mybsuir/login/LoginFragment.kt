@@ -9,7 +9,7 @@ import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.api.views.BaseFragment
 import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.data.InternalException
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.f_login.*
 import kotlinx.android.synthetic.main.f_login.view.*

@@ -17,4 +17,6 @@ interface IProfileModel {
 
     fun addSkill(skill: Skill): Skill?
 
+    fun updateSummary(text: String): String?
+
 }

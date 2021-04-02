@@ -1,4 +1,4 @@
-package com.theevilroot.mybsuir.common
+package com.theevilroot.mybsuir.common.utils
 
 import android.view.View
 import androidx.annotation.IdRes

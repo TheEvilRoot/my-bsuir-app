@@ -69,4 +69,14 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
     <string name="paper_request_summary">Справка с <b>%1$s</b> печатью <b>%2$s</b></string>
     <string name="paper_destination_hint"><![CDATA[Для ввода собственного места назначения справки выберите Деканат -> иное]]></string>
     <string name="skill_add_title">Добавление навыка</string>
+    <string name="skill_add_hint">Навык…</string>
+    <string name="skill_add">Добавить</string>
+    <string name="skill_add_tip">Начните вводить для отображения подсказок</string>
+    <string name="announcements_title">Объявления</string>
+    <string name="no_announcements">Здесь будут отображаться объявления…</string>
+    <string name="summary_submit_title">Обновление информации</string>
+    <string name="summary_submit_message"><![CDATA[После обновления общая информация в профиле будет следующей:<br/><br/><i>%1$s</i><br/><br/>Если все верно, нажмите <b>Применить</b>]]></string>
+    <string name="summary_submit">Применить</string>
+    <string name="cancel">Отменить</string>
+    <string name="info_help"><![CDATA[Общая информация отображается в Вашем профиле и видна другим пользователям, если опция <b>Профиль</b> в <b>настройках доступа</b> включена.<br/><br/>Вы можете написать пару предложений о себе или что угодно другое.<br/><br/><b>P.S.:</b> при попытке добавить текст, содержащий эмоджи, обновить информацию не получится.<i>Это не наше решение, так работает сервер IIS :)</i>]]></string>
 </resources>

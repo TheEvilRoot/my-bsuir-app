@@ -1,21 +1,21 @@
 package com.theevilroot.mybsuir.profile
 
 import android.app.Dialog
+import android.content.Context
 import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
-import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.afollestad.materialdialogs.callbacks.onCancel
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.callbacks.onPreShow
 import com.afollestad.materialdialogs.customview.customView
@@ -23,16 +23,18 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.LayoutParams.*
-import com.google.android.material.dialog.MaterialDialogs
 import com.theevilroot.mybsuir.R
+import com.theevilroot.mybsuir.announcements.AnnouncementsController
+import com.theevilroot.mybsuir.announcements.holders.AnnouncementViewHolder
 import com.theevilroot.mybsuir.common.SharedModel
+import com.theevilroot.mybsuir.common.TextWatchWrapper
 import com.theevilroot.mybsuir.common.adapters.AddableAdapter
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.adapters.SimpleRangedAdapter
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import com.theevilroot.mybsuir.common.data.*
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 import com.theevilroot.mybsuir.profile.data.BadgeType
 import com.theevilroot.mybsuir.profile.holders.ReferenceViewHolder
 import com.theevilroot.mybsuir.profile.holders.SkillSuggestionViewHolder
@@ -86,14 +88,20 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
     private val model: SharedModel by instance()
 
     private val controller by lazy { ProfileController(model) }
+    private val announcementsController by lazy { AnnouncementsController(model) }
 
     private val skillsAdapter by lazy { AddableAdapter(R.layout.i_skill, R.layout.i_skill_add,
             ::SkillsViewHolder, ::SkillsViewHolder, ::onSkillAddClick) }
     private val referencesAdapter by lazy { SimpleAdapter(R.layout.i_reference, ::ReferenceViewHolder) }
     private val skillsSuggestionAdapter by lazy { SimpleRangedAdapter(R.layout.i_skill,
         ::SkillSuggestionViewHolder) }
+    private val announcementsAdapter by lazy { SimpleAdapter(R.layout.i_announcement,
+            ::AnnouncementViewHolder) }
+    private val summaryTextListener = TextWatchWrapper(onTextChanged = ::onSummaryEditChange)
 
     private var skillAddDialog: Dialog? = null
+    private var summarySubmitDialog: Dialog? = null
+    private var summaryHelpDialog: Dialog? = null
 
     override fun View.onView() {
         with(skills_view) {
@@ -103,6 +111,11 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         }
         with(references_view) {
             adapter = referencesAdapter
+            layoutManager = LinearLayoutManager(context)
+        }
+
+        with(announcements_view) {
+            adapter = announcementsAdapter
             layoutManager = LinearLayoutManager(context)
         }
 
@@ -126,8 +139,16 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
                     bundleOf("logout" to true))
         }
 
+        info_hint.setOnClickListener {
+            showSummaryHelpDialog()
+        }
+
+        updateAnnouncements(emptyList())
         updateData(true)
     }
+
+    private fun viewUpdateData(useCurrentCredentials: Boolean, forceUpdate: Boolean) =
+            view?.updateData(useCurrentCredentials, forceUpdate)
 
     private fun getCountUpdate(type: BadgeType, f: () -> Single<Int>) {
         f().observeOn(AndroidSchedulers.mainThread()).subscribe({
@@ -137,9 +158,16 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         }, { updateBadge(type) })
     }
 
+    private fun getAnnouncementsUpdate() {
+        announcementsController.updateAnnouncements(false)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ view?.updateAnnouncements(it) }, {  })
+    }
+
     override fun onDataUpdated(data: ProfileInfo) {
         getCountUpdate(BadgeType.PAPERS, controller::updatePapersCount)
         getCountUpdate(BadgeType.SHEETS, controller::updateSheetsCount)
+        getAnnouncementsUpdate()
     }
 
     override fun getDataUpdate(forceUpdate: Boolean): Single<ProfileInfo> =
@@ -171,6 +199,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         } else {
             params.scrollFlags = 0
             profile_app_bar.setExpanded(true, true)
+            profile_content_scroll.smoothScrollTo(0, 0)
         }
 
         // On every state update
@@ -180,8 +209,8 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
 
         if (this is ProfileViewState.ProfileFilled) {
             with(profileInfo) {
-                profile_header_name.text = shortName
-                profile_title_name.text = shortName
+                profile_header_name.text = fullName
+                profile_title_name.text = fullName
 
                 profile_birth_date.text = birthDate
                 profile_faculty.text = facultyString
@@ -197,13 +226,13 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
                 referencesAdapter.setData(references)
                 profile_no_references.visibility = references.isEmpty().asVisibility()
 
-                if (summary == null) {
+                if (summary.isNullOrBlank()) {
                     profile_summary.text?.clear()
                     profile_summary.setHint(R.string.no_summary)
                 } else {
                     profile_summary.setText(summary)
                 }
-
+                context.storeProfileSummary(summary ?: "")
             }
 
         }
@@ -242,15 +271,17 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
                         InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
         profile_summary.setTextIsSelectable(true)
         profile_summary.setBackgroundResource(com.google.android.material.R.drawable.abc_edit_text_material)
+        profile_summary.addTextChangedListener(summaryTextListener)
 
         info_edit.setImageResource(R.drawable.ic_round_check_24)
-        info_edit.setOnClickListener { setInfoViewState() }
+        info_edit.setOnClickListener { onSummarySubmit() }
     }
 
     private fun setInfoViewState() {
         profile_summary.inputType = InputType.TYPE_NULL
         profile_summary.setTextIsSelectable(false)
         profile_summary.setBackgroundResource(0)
+        profile_summary.removeTextChangedListener(summaryTextListener)
 
         info_edit.setImageResource(R.drawable.ic_round_edit_24)
         info_edit.setOnClickListener { setInfoEditState() }
@@ -258,6 +289,42 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
 
     private fun onSkillAddClick(v: View) = view?.run {
         showSkillAddDialog()
+    }
+
+    private fun onSummaryEditChange(s: CharSequence, a: Int, b: Int, c: Int) {
+        context?.getSharedPreferences("profile", Context.MODE_PRIVATE)?.edit {
+            putString("edit_summary", "$s")
+        }
+    }
+
+    private fun onSummarySubmit() = view?.run {
+        val text = profile_summary.text?.toString() ?: ""
+        val original = context?.getSharedPreferences("profile", Context.MODE_PRIVATE)
+                ?.getString("summary", "") ?: ""
+
+        if (text == original)
+            return setInfoViewState()
+
+        showSummarySubmitDialog(text, {
+            applyState(ProfileViewState.ProfileLoading)
+            controller.updateSummary(text)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(::onSummaryUpdated)
+                    { onSummaryUpdateFailed(true) }
+        }) {
+            onSummaryUpdateFailed(false)
+        }
+    }
+
+    private fun onSummaryUpdated() = view?.run {
+        updateData(useCurrentCredentials = true, forceUpdate = true)
+    }
+
+    private fun onSummaryUpdateFailed(alert: Boolean) = view?.run {
+        if (alert) {
+            Toast.makeText(context, "Не удалось обновить информацию.", Toast.LENGTH_LONG).show()
+        }
+        updateData(useCurrentCredentials = true, forceUpdate = false)
     }
 
     private fun View.showSkillAddDialog() {
@@ -314,6 +381,46 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
                     skill_add_submit.isEnabled = true
                     skillsSuggestionAdapter.setData(emptyList())
                 }
+        }
+    }
+
+    private fun View.showSummarySubmitDialog(text: String, onSubmit: View.(String) -> Unit, onCancel: View.() -> Unit) {
+        summarySubmitDialog?.dismiss()
+        summarySubmitDialog = MaterialDialog(context).apply {
+            title(R.string.summary_submit_title)
+            val displayText = if (text.isBlank()) "<b>&lt;пусто&gt;</b>" else text
+            message(text=context.getString(R.string.summary_submit_message, displayText)) { html() }
+            cancelable(true)
+            positiveButton(R.string.summary_submit) {
+                this@showSummarySubmitDialog.onSubmit(text)
+            }
+            negativeButton(R.string.cancel) {
+                this@showSummarySubmitDialog.onCancel()
+            }
+            onCancel { this@showSummarySubmitDialog.onCancel() }
+        }
+        summarySubmitDialog?.show()
+    }
+
+    private fun View.showSummaryHelpDialog() {
+        summaryHelpDialog?.dismiss()
+
+        summaryHelpDialog = MaterialDialog(context).apply {
+            title(R.string.info_title)
+            message(R.string.info_help) { html() }
+            cancelable(true)
+            show()
+        }
+    }
+
+    private fun View.updateAnnouncements(list: List<Announcement>) {
+        announcementsAdapter.setData(list)
+        announcements_placeholder.visibility = list.isEmpty().asVisibility()
+    }
+
+    private fun Context.storeProfileSummary(summary: String) {
+        getSharedPreferences("profile", Context.MODE_PRIVATE).edit {
+            putString("summary", summary)
         }
     }
 

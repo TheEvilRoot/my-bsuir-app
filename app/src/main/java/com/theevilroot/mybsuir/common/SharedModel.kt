@@ -16,93 +16,14 @@ import com.theevilroot.mybsuir.profile.IProfileModel
 import com.theevilroot.mybsuir.profile.ProfileModel
 import com.theevilroot.mybsuir.schedule.IScheduleModel
 import com.theevilroot.mybsuir.schedule.ScheduleModel
+import java.util.*
 
 class SharedModel (
-        private val profileModel: IProfileModel,
-        private val papersModel: IPapersModel,
-        private val groupModel: IGroupModel,
-        private val markBookModel: IMarkBookModel,
-        private val markSheetsModel: IMarkSheetsModel,
-        private val announcementsModel: IAnnouncementsModel,
-        private val scheduleModel: IScheduleModel
-) : IProfileModel,
-    IPapersModel,
-    IGroupModel,
-    IMarkBookModel,
-    IMarkSheetsModel,
-    IAnnouncementsModel,
-    IScheduleModel {
-
-    private fun requireNotMe(c: Any) {
-        if (c is SharedModel)
-            throw RuntimeException("SharedModel cannot accumulate SharedModel")
-    }
-
-    init {
-        requireNotMe(profileModel)
-        requireNotMe(papersModel)
-        requireNotMe(groupModel)
-        requireNotMe(markBookModel)
-        requireNotMe(markSheetsModel)
-        requireNotMe(announcementsModel)
-        requireNotMe(scheduleModel)
-    }
-
-    constructor(apiService: ApiService, store: CredentialsStore, context: Context): this(
-            ProfileModel(apiService, store, context),
-            PapersModel(apiService, store, context),
-            GroupModel(apiService, store, context),
-            MarkBookModel(apiService, store, context),
-            MarkSheetsModel(apiService, store, context),
-            AnnouncementsModel(apiService, store, context),
-            ScheduleModel(apiService, store, context)
-    )
-
-    override fun getPersonalCV(allowCache: Boolean): PersonalCV? {
-        return profileModel.getPersonalCV(allowCache)
-    }
-
-    override fun getPersonalInformation(allowCache: Boolean): PersonalInformation? {
-        return profileModel.getPersonalInformation(allowCache)
-    }
-
-    override fun getPapers(allowCache: Boolean): List<Paper>? {
-        return papersModel.getPapers(allowCache)
-    }
-
-    override fun getPlaces(allowCache: Boolean): List<PaperPlaceCategory>? {
-        return papersModel.getPlaces(allowCache)
-    }
-
-    override fun getGroupInfo(allowCache: Boolean): GroupInfo? {
-        return groupModel.getGroupInfo(allowCache)
-    }
-
-    override fun getMarkBook(allowCache: Boolean): MarkBook? {
-        return markBookModel.getMarkBook(allowCache)
-    }
-
-    override fun getMarkSheets(allowCache: Boolean): List<MarkSheet>? {
-        return markSheetsModel.getMarkSheets(allowCache)
-    }
-
-    override fun getAnnouncements(allowCache: Boolean): List<Announcement>? {
-        return announcementsModel.getAnnouncements(allowCache)
-    }
-
-    override fun getDaySchedule(allowCache: Boolean): DaySchedule? {
-        return scheduleModel.getDaySchedule(allowCache)
-    }
-
-    override fun updateAvailableSkills(allowCache: Boolean): List<Skill> {
-        return profileModel.updateAvailableSkills(allowCache)
-    }
-
-    override fun addSkill(skill: Skill): Skill? {
-        return profileModel.addSkill(skill)
-    }
-
-    override fun newSkill(data: NewSkill): Skill? {
-        return profileModel.newSkill(data)
-    }
-}
+    apiService: ApiService, store: CredentialsStore, context: Context
+) : IProfileModel by ProfileModel(apiService, store, context),
+    IPapersModel by PapersModel(apiService, store, context),
+    IGroupModel by GroupModel(apiService, store, context),
+    IMarkBookModel by MarkBookModel(apiService, store, context),
+    IMarkSheetsModel by MarkSheetsModel(apiService, store, context),
+    IAnnouncementsModel by AnnouncementsModel(apiService, store, context),
+    IScheduleModel by ScheduleModel(apiService, store, context)

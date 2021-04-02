@@ -31,12 +31,17 @@ class ProfileModel(api: ApiService, store: CredentialsStore, applicationContext:
 
     override fun newSkill(data: NewSkill): Skill? {
         return apiCall({ api.newSkill(it, data) }, null)?.also { skill ->
-            availableSkills = availableSkills?.let { it + skill} ?: emptyList()
+            availableSkills = availableSkills?.let { it + skill } ?: emptyList()
         }
     }
 
     override fun addSkill(skill: Skill): Skill? {
         return apiCall({ api.addSkill(it, skill) }, null)
             ?.let { skill }
+    }
+
+    override fun updateSummary(text: String): String? {
+        return apiCall({ api.summary(it, NewSummary(text)) }, null)
+                ?.let { text }
     }
 }

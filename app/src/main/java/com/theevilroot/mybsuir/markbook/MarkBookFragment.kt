@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.common.data.*
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 import com.theevilroot.mybsuir.markbook.semesters.SemestersAdapter
 import com.theevilroot.mybsuir.markbook.semesters.SemestersScrollDelegate
 import io.reactivex.rxjava3.core.Single

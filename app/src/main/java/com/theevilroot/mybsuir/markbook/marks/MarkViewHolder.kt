@@ -4,9 +4,9 @@ import android.view.View
 import android.widget.TextView
 import com.theevilroot.mybsuir.R
 import com.theevilroot.mybsuir.common.adapters.SimpleViewHolder
-import com.theevilroot.mybsuir.common.bind
+import com.theevilroot.mybsuir.common.utils.bind
 import com.theevilroot.mybsuir.common.data.Mark
-import com.theevilroot.mybsuir.common.asVisibility
+import com.theevilroot.mybsuir.common.utils.asVisibility
 
 sealed class AbstractMarkViewHolder(itemView: View): SimpleViewHolder<Mark>(itemView)
 

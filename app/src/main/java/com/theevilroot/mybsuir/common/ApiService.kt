@@ -34,8 +34,8 @@ interface ApiService {
     @GET("portal/announcement")
     fun announcements(@Header("Cookie") token: String): Call<List<Announcement>>
 
-    @GET("portal/schedule/gradebook?date=Fri%20Feb%2012%202021")
-    fun daySchedule(@Header("Cookie") token: String): Call<DaySchedule>
+    @GET("portal/schedule/gradebook")
+    fun daySchedule(@Header("Cookie") token: String, @Query("date") date: String): Call<DaySchedule>
 
     @GET("portal/skills")
     fun availableSkills(@Header("Cookie") token: String): Call<List<Skill>>
@@ -45,5 +45,8 @@ interface ApiService {
 
     @POST("portal/skill")
     fun addSkill(@Header("Cookie") token: String, @Body skill: Skill): Call<ResponseBody>
+
+    @PUT("portal/summary")
+    fun summary(@Header("Cookie") token: String, @Body body: NewSummary): Call<ResponseBody>
 
 }

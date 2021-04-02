@@ -134,6 +134,17 @@
             android:layout_alignParentTop="true"
             android:tint="@color/colorPrimaryDark"/>
 
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/info_hint"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/ic_round_help_outline_24"
+            android:background="@android:color/transparent"
+            android:layout_toStartOf="@id/info_edit"
+            android:layout_alignParentTop="true"
+            android:tint="@color/colorPrimaryDark"/>
+
         <!-- should i name it `bio`? -->
         <!-- or `summary` as api does? -->
         <TextView
@@ -203,6 +214,46 @@
             android:layout_marginHorizontal="4dp"
             android:layout_marginTop="8dp"
             android:text="@string/no_references"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_announcements"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_references"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/b_block"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/announcements_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/announcements_title"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/announcements_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/announcements_title"
+            android:layout_marginTop="8dp"
+            tools:itemCount="3"
+            tools:listitem="@layout/i_announcement" />
+
+        <TextView
+            android:id="@+id/announcements_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/announcements_title"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/no_announcements"
             android:visibility="gone" />
 
     </RelativeLayout>
