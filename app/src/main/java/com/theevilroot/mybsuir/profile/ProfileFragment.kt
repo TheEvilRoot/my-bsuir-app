@@ -371,13 +371,15 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         skill_add_submit.isEnabled = false
         skill_add_field.addTextChangedListener {
             val text = it?.toString()
-            if (text != null) {
+            if (text != null && compositeDisposable.size() == 0) {
                 controller.suggestSkills(text, true)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ data ->
                         skill_add_hint.visibility = View.GONE
                         skillsSuggestionAdapter.setData(data)
-                    }) { }.let(compositeDisposable::add)
+                        compositeDisposable.clear()
+                    }) { compositeDisposable.clear() }
+                        .let(compositeDisposable::add)
 
             }
             skill_add_submit.isEnabled = text != null
