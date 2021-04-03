@@ -39,4 +39,10 @@ class MainActivity : AppCompatActivity(), KodeinAware, NavController.OnDestinati
         }
     }
 
+    fun setScheduleBadge(value: Int?) {
+        navigation_bar.getOrCreateBadge(R.id.fragment_home_schedule).apply {
+            value?.let { number = it } ?: clearNumber()
+        }
+    }
+
 }

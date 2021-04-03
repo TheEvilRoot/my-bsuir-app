@@ -165,6 +165,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         getCountUpdate(BadgeType.PAPERS, controller::updatePapersCount)
         getCountUpdate(BadgeType.SHEETS, controller::updateSheetsCount)
         getAnnouncementsUpdate()
+        getTodayScheduleBadgeUpdate()
     }
 
     override fun getDataUpdate(forceUpdate: Boolean): Single<ProfileInfo> =
@@ -245,6 +246,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         val view = when (type) {
             BadgeType.PAPERS -> papers_badge
             BadgeType.SHEETS -> sheets_badge
+            BadgeType.SCHEDULE -> return@run mainActivity?.setScheduleBadge(value)
         }
         if (value == null) {
             clearBadge(view)
@@ -439,6 +441,13 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         getSharedPreferences("profile", Context.MODE_PRIVATE).edit {
             putString("summary", summary)
         }
+    }
+
+    private fun getTodayScheduleBadgeUpdate()  {
+        controller.updateTodayScheduleBadge()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ updateBadge(BadgeType.SCHEDULE, it) })
+                { updateBadge(BadgeType.SCHEDULE, null) }
     }
 
 }

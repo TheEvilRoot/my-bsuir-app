@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import com.theevilroot.mybsuir.common.MainActivity
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
@@ -16,6 +17,9 @@ abstract class BaseFragment<State> (
 ) : Fragment(), KodeinAware {
 
     override val kodein: Kodein by kodein()
+
+    protected val mainActivity: MainActivity?
+        get() = activity as? MainActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,

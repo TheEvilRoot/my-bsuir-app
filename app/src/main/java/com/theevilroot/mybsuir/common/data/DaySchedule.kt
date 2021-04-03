@@ -7,4 +7,9 @@ data class DaySchedule (
     val currentWeek: Int,
     val dateStart: String,
     val dateEnd: String
-)
+) {
+
+    fun uniqueCount(): Int =
+            todaySchedules.distinctBy { it.startTime }.size
+
+}

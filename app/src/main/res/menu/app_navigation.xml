@@ -23,6 +23,7 @@
 
     <item
         android:id="@+id/fragment_home_schedule"
+        android:icon="@drawable/ic_round_event_note_24"
         android:title="Пары" />
 
 </menu>

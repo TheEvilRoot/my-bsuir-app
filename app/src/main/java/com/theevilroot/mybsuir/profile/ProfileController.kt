@@ -6,6 +6,7 @@ import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.*
 
 class ProfileController (
     val model: SharedModel
@@ -80,5 +81,12 @@ class ProfileController (
             Completable.create {
                 model.removeSkill(skill)
                 it.onComplete()
+            }.subscribeOn(Schedulers.io())
+
+    fun updateTodayScheduleBadge(): Single<Int?> =
+            Single.create<Int?> {
+                 val count = model.getDaySchedule(true, Date())
+                         ?.uniqueCount()
+                it.onSuccess(count)
             }.subscribeOn(Schedulers.io())
 }
