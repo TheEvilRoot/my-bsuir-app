@@ -30,7 +30,9 @@ class HomeScheduleFragment : ModelDataFragment<HomeScheduleFragment.HomeSchedule
     private val model: IScheduleModel by instance()
     private val controller by lazy { HomeScheduleController(model) }
 
-    private val scheduleAdapter by lazy { ScheduleAdapter() }
+    private val scheduleAdapter by lazy { ScheduleAdapter(
+            resources.getString(R.string.schedule_start_of_day),
+            resources.getString(R.string.schedule_end_of_day)) }
 
     override fun View.onView() {
         with(schedule_list) {

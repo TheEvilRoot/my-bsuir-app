@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/schedule_entry_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/schdule_entry_mark"
             android:layout_marginStart="36dp"
@@ -37,6 +37,17 @@
             android:textStyle="bold"
             android:textSize="20sp"
             tools:text="Schedule Entry" />
+
+        <TextView
+            android:id="@+id/schedule_entry_subgroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/schedule_entry_title"
+            android:layout_alignBottom="@id/schedule_entry_title"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_marginStart="8dp"
+            tools:text="1 subgroup" />
 
         <TextView
             android:id="@+id/schedule_entry_teacher"

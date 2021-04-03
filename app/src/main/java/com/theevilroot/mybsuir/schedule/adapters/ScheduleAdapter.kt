@@ -12,7 +12,10 @@ import com.theevilroot.mybsuir.schedule.holders.AbstractScheduleViewHolder
 import com.theevilroot.mybsuir.schedule.holders.ScheduleItemViewHolder
 import com.theevilroot.mybsuir.schedule.holders.ScheduleLineViewHolder
 
-class ScheduleAdapter : RecyclerView.Adapter<AbstractScheduleViewHolder>() {
+class ScheduleAdapter (
+    private val dayStartTitle: String,
+    private val dayEndTitle: String
+) : RecyclerView.Adapter<AbstractScheduleViewHolder>() {
 
     private val viewTypeLesson = 1
     private val viewTypeRest = 2
@@ -24,16 +27,27 @@ class ScheduleAdapter : RecyclerView.Adapter<AbstractScheduleViewHolder>() {
             if (list.isEmpty())
                 return@apply
 
-            add(ScheduleItem.RestInterval(null, "Start of the day", list.first().startTime))
+            add(ScheduleItem.RestInterval(null, dayStartTitle, list.first().startTime))
             var previous: ScheduleEntry? = null
-            for (entry in list) {
-                if (previous != null) {
-                    add(ScheduleItem.RestInterval(previous.endTime, "Rest", entry.startTime))
+            for ((index, entry) in list.withIndex()) {
+                val isNotPaired = previous?.startTime != entry.startTime
+                if (previous != null && isNotPaired) {
+                    add(ScheduleItem.RestInterval(previous.endTime, "${
+                        previous.endTime.between(entry.startTime).totalMinutes
+                    } минут перерыв", entry.startTime))
                 }
-                add(ScheduleItem.LessonInterval(entry))
+                val pairedWithNext = index != list.lastIndex
+                        && list[index + 1].startTime == entry.startTime
+                add(ScheduleItem.LessonInterval(entry,
+                    when {
+                        pairedWithNext -> true
+                        !pairedWithNext && !isNotPaired -> false
+                        else -> null
+                    }
+                ))
                 previous = entry
             }
-            add(ScheduleItem.RestInterval(previous?.endTime, "End of the day", null))
+            add(ScheduleItem.RestInterval(previous?.endTime, dayEndTitle, null))
         }
         notifyDataSetChanged()
     }

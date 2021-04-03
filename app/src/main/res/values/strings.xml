@@ -80,4 +80,6 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
     <string name="cancel">Отменить</string>
     <string name="info_help"><![CDATA[Общая информация отображается в Вашем профиле и видна другим пользователям, если опция <b>Профиль</b> в <b>настройках доступа</b> включена.<br/><br/>Вы можете написать пару предложений о себе или что угодно другое.<br/><br/><b>P.S.:</b> при попытке добавить текст, содержащий эмоджи, обновить информацию не получится.<i>Это не наше решение, так работает сервер IIS :)</i>]]></string>
     <string name="remove_skill_fail">Не удалось удалить навык %1$s</string>
+    <string name="schedule_start_of_day">Начало дня</string>
+    <string name="schedule_end_of_day">Конец дня</string>
 </resources>

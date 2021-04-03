@@ -22,8 +22,8 @@ class ScheduleLineViewHolder(itemView: View) : AbstractScheduleViewHolder(itemVi
         timeline_entry.isEnabled = false
 
         schedule_line_title.text = data.title
-        schedule_line_top.text = data.start ?: ""
-        schedule_line_bottom.text = data.end ?: ""
+        schedule_line_top.text = "${data.start ?: ""}"
+        schedule_line_bottom.text = "${data.end ?: ""}"
 
         schedule_line_top.visibility = (data.start != null).asVisibility()
         schedule_line_bottom.visibility = (data.end != null).asVisibility()

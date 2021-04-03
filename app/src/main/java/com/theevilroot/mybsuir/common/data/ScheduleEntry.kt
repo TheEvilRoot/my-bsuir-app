@@ -16,7 +16,7 @@ data class ScheduleEntry (
     val type: ScheduleType,
     val employee: List<ScheduleEmployee>,
     @SerializedName("startLessonTime")
-    val startTime: String,
+    val startTime: SimpleTime,
     @SerializedName("endLessonTime")
-    val endTime: String
+    val endTime: SimpleTime
 )
