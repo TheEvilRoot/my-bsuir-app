@@ -49,4 +49,7 @@ interface ApiService {
     @PUT("portal/summary")
     fun summary(@Header("Cookie") token: String, @Body body: NewSummary): Call<ResponseBody>
 
+    @PUT("portal/skill")
+    fun removeSkill(@Header("Cookie") token: String, @Body skill: Skill): Call<ResponseBody>
+
 }

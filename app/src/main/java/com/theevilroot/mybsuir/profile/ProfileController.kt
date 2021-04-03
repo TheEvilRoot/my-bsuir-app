@@ -75,4 +75,10 @@ class ProfileController (
                 model.updateSummary(text)
                 it.onComplete()
             }.subscribeOn(Schedulers.io())
+
+    fun removeSkill(skill: Skill): Completable =
+            Completable.create {
+                model.removeSkill(skill)
+                it.onComplete()
+            }.subscribeOn(Schedulers.io())
 }

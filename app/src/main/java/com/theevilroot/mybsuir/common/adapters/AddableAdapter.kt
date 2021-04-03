@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 
-class AddableAdapter<T, VH: AddableViewHolder<T>> (
+open class AddableAdapter<T, VH: AddableViewHolder<T>> (
     @LayoutRes val itemLayout: Int,
     @LayoutRes val addLayout: Int,
     val itemHolderFactory: (View) -> VH,
     val addHolderFactory: (View) -> VH,
-    val onAddListener: View.OnClickListener
+    val onAddListener: View.OnClickListener,
 ) : RecyclerView.Adapter<VH>() {
 
-    private var list: List<T> = emptyList()
+    protected var list: List<T> = emptyList()
 
     private val viewTypeItem = 0
     private val viewTypeAdd = 1
@@ -59,8 +59,9 @@ class AddableAdapter<T, VH: AddableViewHolder<T>> (
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         if (position in list.indices) {
-            holder.bind(list[position], isFirst = position == 0, isLast = position == list.lastIndex)
-            holder.itemView.setOnClickListener {  }
+            val item = list[position]
+            holder.bind(item, isFirst = position == 0, isLast = position == list.lastIndex)
+            holder.itemView.setOnClickListener { }
         } else {
             holder.bind(null, isFirst = position == 0, isLast = true)
             holder.itemView.setOnClickListener(onAddListener)

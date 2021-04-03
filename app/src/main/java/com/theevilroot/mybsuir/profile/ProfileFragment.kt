@@ -35,6 +35,7 @@ import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.common.utils.asVisibility
+import com.theevilroot.mybsuir.profile.adapters.SkillsAdapter
 import com.theevilroot.mybsuir.profile.data.BadgeType
 import com.theevilroot.mybsuir.profile.holders.ReferenceViewHolder
 import com.theevilroot.mybsuir.profile.holders.SkillSuggestionViewHolder
@@ -79,7 +80,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         object ProfileLoading: ProfileViewState() {
             override val headerContentVisibility: Boolean = false
             override val headerProgressVisibility: Boolean = true
-            override val headerCanCollapse: Boolean = false
+            override val headerCanCollapse: Boolean = true
             override val headerErrorVisibility: Boolean = false
             override val buttonsAvailable: Boolean = false
         }
@@ -90,8 +91,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
     private val controller by lazy { ProfileController(model) }
     private val announcementsController by lazy { AnnouncementsController(model) }
 
-    private val skillsAdapter by lazy { AddableAdapter(R.layout.i_skill, R.layout.i_skill_add,
-            ::SkillsViewHolder, ::SkillsViewHolder, ::onSkillAddClick) }
+    private val skillsAdapter by lazy { SkillsAdapter(::onSkillAddClick, ::onSkillClick, ::onSkillRemove) }
     private val referencesAdapter by lazy { SimpleAdapter(R.layout.i_reference, ::ReferenceViewHolder) }
     private val skillsSuggestionAdapter by lazy { SimpleRangedAdapter(R.layout.i_skill,
         ::SkillSuggestionViewHolder) }
@@ -146,9 +146,6 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         updateAnnouncements(emptyList())
         updateData(true)
     }
-
-    private fun viewUpdateData(useCurrentCredentials: Boolean, forceUpdate: Boolean) =
-            view?.updateData(useCurrentCredentials, forceUpdate)
 
     private fun getCountUpdate(type: BadgeType, f: () -> Single<Int>) {
         f().observeOn(AndroidSchedulers.mainThread()).subscribe({
@@ -222,6 +219,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
                     .into(profile_image)
 
                 skillsAdapter.setData(skills)
+                skillsAdapter.cleanRemovable()
 
                 referencesAdapter.setData(references)
                 profile_no_references.visibility = references.isEmpty().asVisibility()
@@ -241,7 +239,6 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
             profile_error_message.text = message
             profile_refresh.setOnClickListener(retryHandler)
         }
-
     }
 
     private fun updateBadge(type: BadgeType, value: Int? = null) = view?.run {
@@ -289,6 +286,26 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
 
     private fun onSkillAddClick(v: View) = view?.run {
         showSkillAddDialog()
+    }
+
+    private fun onSkillClick(skill: Skill, index: Int) {
+        if (skillsAdapter.removableIndex == index) {
+            skillsAdapter.cleanRemovable()
+        } else {
+            skillsAdapter.removableIndex = index
+        }
+    }
+
+    private fun onSkillRemove(skill: Skill) {
+        view?.run {
+            // TODO: should i make dialog?
+            controller.removeSkill(skill)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ updateData(useCurrentCredentials = true, forceUpdate = true) }) {
+                        Toast.makeText(context, getString(R.string.remove_skill_fail, skill.name), Toast.LENGTH_SHORT).show()
+                    }
+            skillsAdapter.cleanRemovable()
+        }
     }
 
     private fun onSummaryEditChange(s: CharSequence, a: Int, b: Int, c: Int) {

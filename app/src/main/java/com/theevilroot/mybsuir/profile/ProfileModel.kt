@@ -44,4 +44,9 @@ class ProfileModel(api: ApiService, store: CredentialsStore, applicationContext:
         return apiCall({ api.summary(it, NewSummary(text)) }, null)
                 ?.let { text }
     }
+
+    override fun removeSkill(skill: Skill): Skill? {
+        return apiCall({ api.removeSkill(it, skill) }, null)
+                ?.let { skill }
+    }
 }
