@@ -52,4 +52,7 @@ interface ApiService {
     @PUT("portal/skill")
     fun removeSkill(@Header("Cookie") token: String, @Body skill: Skill): Call<ResponseBody>
 
+    @PUT("portal/{field}")
+    fun savePreference(@Header("Cookie") token: String, @Path("field") field: String, @Body body: Map<String, Boolean>): Call<ResponseBody>
+
 }

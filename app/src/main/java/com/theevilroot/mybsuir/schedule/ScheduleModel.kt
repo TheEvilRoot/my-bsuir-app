@@ -5,6 +5,7 @@ import com.theevilroot.mybsuir.common.ApiModel
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.data.DaySchedule
+import com.theevilroot.mybsuir.common.utils.asScheduleDate
 import java.util.*
 
 class ScheduleModel (
@@ -13,7 +14,11 @@ class ScheduleModel (
     context: Context
 ): ApiModel(api, store, context), IScheduleModel {
 
-    override fun getDaySchedule(allowCache: Boolean, date: Date): DaySchedule? =
-        apiCall({ api.daySchedule(it, "Fri Feb 12 2021") }, null)
+    private val dayScheduleCache = mutableMapOf<String, DaySchedule>()
+
+    override fun getDaySchedule(allowCache: Boolean, date: Date): DaySchedule? = date.asScheduleDate().let { dateStr ->
+        apiCall({ api.daySchedule(it, dateStr) }, if (allowCache) dayScheduleCache[dateStr] else null)
+            ?.also { dayScheduleCache[dateStr] = it }
+    }
 
 }

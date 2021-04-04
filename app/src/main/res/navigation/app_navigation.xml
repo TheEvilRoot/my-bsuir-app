@@ -63,4 +63,9 @@
         android:label="HomeScheduleFragment"
         tools:layout="@layout/f_home_schedule" />
 
+    <fragment android:id="@+id/fragment_preferences"
+        android:name="com.theevilroot.mybsuir.preferences.PreferencesFragment"
+        android:label="PreferencesFragment"
+        tools:layout="@layout/f_preferences" />
+
 </navigation>

@@ -134,6 +134,10 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
             findNavController().navigate(R.id.fragment_sheets)
         }
 
+        button_settings.setOnClickListener {
+            findNavController().navigate(R.id.fragment_preferences)
+        }
+
         profile_logout.setOnClickListener {
             findNavController().navigate(R.id.action_profile_logout,
                     bundleOf("logout" to true))

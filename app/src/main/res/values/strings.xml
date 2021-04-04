@@ -82,4 +82,13 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
     <string name="remove_skill_fail">Не удалось удалить навык %1$s</string>
     <string name="schedule_start_of_day">Начало дня</string>
     <string name="schedule_end_of_day">Конец дня</string>
+    <string name="preferences_title">Настройки</string>
+    <string name="access_preference_rating">Рейтинг</string>
+    <string name="access_preference_profile">Профиль</string>
+    <string name="access_preference_job">В поиске работы</string>
+    <string name="show_title">Отображается</string>
+    <string name="dont_show_title">Не отображается</string>
+    <string name="yes_title">Да</string>
+    <string name="no_title">Нет</string>
+    <string name="preferences_title_access">Доступ</string>
 </resources>

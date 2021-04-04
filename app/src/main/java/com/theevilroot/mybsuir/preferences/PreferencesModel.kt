@@ -10,4 +10,10 @@ class PreferencesModel (
         store: CredentialsStore,
         appContext: Context
 ) : ApiModel(api, store, appContext), IPreferencesModel {
+
+    override fun savePreference(field: String, key: String, value: Boolean): Boolean? {
+        return apiCall({ api.savePreference(it, field, mapOf(key to value)) }, null)
+            ?.let { value }
+    }
+
 }
