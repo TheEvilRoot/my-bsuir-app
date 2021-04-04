@@ -1,13 +1,12 @@
 package com.theevilroot.mybsuir.common
 
 import android.app.Application
+import android.os.Build
 import com.theevilroot.mybsuir.common.controller.CacheController
-import com.theevilroot.mybsuir.group.GroupModel
+import com.theevilroot.mybsuir.common.encryption.base.IEncryptionLayer
+import com.theevilroot.mybsuir.common.encryption.KeyStoreEncryptionLayer
+import com.theevilroot.mybsuir.common.encryption.LegacyEncryptionLayer
 import com.theevilroot.mybsuir.login.LoginModel
-import com.theevilroot.mybsuir.markbook.MarkBookModel
-import com.theevilroot.mybsuir.marksheets.MarkSheetsModel
-import com.theevilroot.mybsuir.papers.PapersModel
-import com.theevilroot.mybsuir.profile.ProfileModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.kodein.di.Kodein
@@ -16,8 +15,6 @@ import org.kodein.di.android.x.androidXModule
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class App : Application(), KodeinAware {
 
@@ -31,7 +28,7 @@ class App : Application(), KodeinAware {
         bind<CredentialsStore>() with singleton { CredentialsStore() }
 
         /* Layer 1 */
-        bind<LoginModel>() with singleton { LoginModel(applicationContext, instance()) }
+        bind<LoginModel>() with singleton { LoginModel(applicationContext, instance(), createEncryptionStack()) }
         bind<SharedModel>() with singleton { SharedModel(instance(), instance(), this@App) }
 
         /* Layout 2 */
@@ -46,5 +43,13 @@ class App : Application(), KodeinAware {
 
     private fun createApiService(): ApiService =
             ServiceFactory.createService(apiBaseUrl, createHttpClient())
+
+    private fun createEncryptionStack(): List<IEncryptionLayer> {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            listOf(KeyStoreEncryptionLayer())
+        } else {
+            listOf(LegacyEncryptionLayer(this))
+        }
+    }
 
 }

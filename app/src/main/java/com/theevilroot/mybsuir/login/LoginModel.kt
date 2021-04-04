@@ -1,16 +1,21 @@
 package com.theevilroot.mybsuir.login
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.data.LoginRequest
 import com.theevilroot.mybsuir.common.data.LoginResult
+import com.theevilroot.mybsuir.common.encryption.base.IEncryptionLayer
 import com.theevilroot.mybsuir.login.data.UserCache
 import java.io.File
 
-class LoginModel (context: Context, val api: ApiService) {
+class LoginModel (
+    context: Context,
+    val api: ApiService,
+    val encryptionStack: List<IEncryptionLayer>
+) {
 
     private val appContext = context.applicationContext
     private val gson = GsonBuilder().create()
@@ -21,8 +26,16 @@ class LoginModel (context: Context, val api: ApiService) {
             return null
         }
 
-        val content = file.readText()
-        val obj = JsonParser.parseString(content)
+        val encryptedContent = file.readBytes()
+
+        val obj = try {
+            val content = encryptionStack.fold(encryptedContent) { acc, layer -> layer.decrypt(acc) }
+            JsonParser.parseString(String(content, Charsets.UTF_8))
+        } catch (e: Exception) {
+            Log.e("Login", "readCacheFile/decryption failure with ${encryptionStack.size} long stack", e)
+            return null
+        }
+
         if (!obj.isJsonObject)
             return null
 
@@ -32,7 +45,15 @@ class LoginModel (context: Context, val api: ApiService) {
     fun writeCacheFile(userCache: UserCache) {
         val file = File(appContext.filesDir, "usercache.dat")
         val cacheObj = gson.toJsonTree(userCache)
-        file.writeText(gson.toJson(cacheObj))
+        val content = gson.toJson(cacheObj).toByteArray()
+
+        val encryptedContent =  try {
+            encryptionStack.fold(content) { acc, layer -> layer.encrypt(acc) }
+        } catch (e: Exception) {
+            Log.e("Login", "writeCacheFile/encryption failure with ${encryptionStack.size} long stack", e)
+            return
+        }
+        file.writeBytes(encryptedContent)
     }
 
     fun checkUserToken(token: String): Boolean {

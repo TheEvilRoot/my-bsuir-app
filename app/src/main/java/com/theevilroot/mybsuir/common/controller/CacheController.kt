@@ -11,17 +11,16 @@ class CacheController (
         val store: CredentialsStore
 ) {
 
-    fun <T> preloadCacheAndCall(data: Single<T>, checkMemory: Boolean = true): Single<T> =
-            if (checkMemory && hasCredentials()) {
-                data.map { it }
-            } else {
-                getCachedCredentials()
-                        .flatMap { isLoaded ->
-                            if (isLoaded)
-                                data
-                            else Single.create { i -> i.onError(NoCredentialsException()) }
-                        }
+    fun <T> preloadCacheAndCall(data: Single<T>, checkMemory: Boolean = true): Single<T> {
+        if (checkMemory && hasCredentials())
+            return data
+
+        return getCachedCredentials()
+            .flatMap { isLoaded ->
+                if (isLoaded) data
+                else Single.create { i -> i.onError(NoCredentialsException()) }
             }
+    }
 
     /**
      * Read file from disk

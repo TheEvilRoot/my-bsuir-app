@@ -16,6 +16,7 @@ import io.reactivex.rxjava3.core.Single
 import org.kodein.di.generic.instance
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.security.cert.CertPathValidatorException
 
 abstract class ModelDataFragment<State, MT>(@LayoutRes layoutRes: Int) : BaseFragment<State>(layoutRes) {
 

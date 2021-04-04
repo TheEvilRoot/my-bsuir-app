@@ -12,6 +12,8 @@ import com.theevilroot.mybsuir.marksheets.IMarkSheetsModel
 import com.theevilroot.mybsuir.marksheets.MarkSheetsModel
 import com.theevilroot.mybsuir.papers.IPapersModel
 import com.theevilroot.mybsuir.papers.PapersModel
+import com.theevilroot.mybsuir.preferences.IPreferencesModel
+import com.theevilroot.mybsuir.preferences.PreferencesModel
 import com.theevilroot.mybsuir.profile.IProfileModel
 import com.theevilroot.mybsuir.profile.ProfileModel
 import com.theevilroot.mybsuir.schedule.IScheduleModel
@@ -26,4 +28,5 @@ class SharedModel (
     IMarkBookModel by MarkBookModel(apiService, store, context),
     IMarkSheetsModel by MarkSheetsModel(apiService, store, context),
     IAnnouncementsModel by AnnouncementsModel(apiService, store, context),
-    IScheduleModel by ScheduleModel(apiService, store, context)
+    IScheduleModel by ScheduleModel(apiService, store, context),
+    IPreferencesModel by PreferencesModel(apiService, store, context)
