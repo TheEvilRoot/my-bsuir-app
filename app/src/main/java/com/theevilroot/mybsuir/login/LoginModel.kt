@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import com.theevilroot.mybsuir.common.ApiService
+import com.theevilroot.mybsuir.common.cache.ICacheManager
 import com.theevilroot.mybsuir.common.data.LoginRequest
 import com.theevilroot.mybsuir.common.data.LoginResult
 import com.theevilroot.mybsuir.common.encryption.base.IEncryptionLayer
@@ -14,7 +15,8 @@ import java.io.File
 class LoginModel (
     context: Context,
     val api: ApiService,
-    val encryptionStack: List<IEncryptionLayer>
+    val encryptionStack: List<IEncryptionLayer>,
+    val cacheManager: ICacheManager
 ) {
 
     private val appContext = context.applicationContext
@@ -89,6 +91,7 @@ class LoginModel (
         val file = File(appContext.filesDir, "usercache.dat")
         if (file.exists())
             file.delete()
+        cacheManager.markDirty()
     }
 
 }

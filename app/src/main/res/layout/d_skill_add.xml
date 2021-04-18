@@ -37,7 +37,7 @@
         android:layout_marginStart="8dp"
         app:backgroundTint="@color/colorPrimaryDark"
         android:textColor="@color/colorPrimary"
-        android:text="@string/skill_add"/>
+        android:text="@string/add_title"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/skill_add_suggestions"

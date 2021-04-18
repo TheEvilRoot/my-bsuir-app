@@ -2,6 +2,8 @@ package com.theevilroot.mybsuir.common
 
 import android.app.Application
 import android.os.Build
+import com.theevilroot.mybsuir.common.cache.CacheManager
+import com.theevilroot.mybsuir.common.cache.ICacheManager
 import com.theevilroot.mybsuir.common.controller.CacheController
 import com.theevilroot.mybsuir.common.encryption.base.IEncryptionLayer
 import com.theevilroot.mybsuir.common.encryption.KeyStoreEncryptionLayer
@@ -26,10 +28,11 @@ class App : Application(), KodeinAware {
         /* Layer 0 */
         bind<ApiService>() with singleton { createApiService() }
         bind<CredentialsStore>() with singleton { CredentialsStore() }
+        bind<ICacheManager>() with singleton { CacheManager() }
 
         /* Layer 1 */
-        bind<LoginModel>() with singleton { LoginModel(applicationContext, instance(), createEncryptionStack()) }
-        bind<SharedModel>() with singleton { SharedModel(instance(), instance(), this@App) }
+        bind<LoginModel>() with singleton { LoginModel(applicationContext, instance(), createEncryptionStack(), instance()) }
+        bind<SharedModel>() with singleton { SharedModel(instance(), instance(), this@App, instance()) }
 
         /* Layout 2 */
         bind<CacheController>() with singleton { CacheController(instance(), instance()) }

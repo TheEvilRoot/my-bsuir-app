@@ -4,23 +4,26 @@ import android.content.Context
 import com.theevilroot.mybsuir.common.ApiModel
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.CredentialsStore
+import com.theevilroot.mybsuir.common.cache.ICacheManager
 import com.theevilroot.mybsuir.common.data.*
 
-class ProfileModel(api: ApiService, store: CredentialsStore, applicationContext: Context): ApiModel(api, store, applicationContext), IProfileModel {
-
-    private var personalCvCache: PersonalCV? = null
-    private var personalInformationCache: PersonalInformation? = null
+class ProfileModel(
+        api: ApiService,
+        store: CredentialsStore,
+        applicationContext: Context,
+        cacheManager: ICacheManager
+): ApiModel(api, store, applicationContext, cacheManager), IProfileModel {
 
     private var availableSkills: List<Skill>? = null
 
     override fun getPersonalCV(allowCache: Boolean): PersonalCV? {
-        return apiCall(ApiService::personalCV, if (allowCache) personalCvCache else null)
-                ?.apply { personalCvCache = this }
+        return apiCall(ApiService::personalCV, if (allowCache) cacheManager.personalCv() else null)
+                ?.apply { cacheManager.personalCv(this) }
     }
 
     override fun getPersonalInformation(allowCache: Boolean): PersonalInformation? {
-        return apiCall(ApiService::personalInformation, if (allowCache) personalInformationCache else null)
-                ?.apply { personalInformationCache = this }
+        return apiCall(ApiService::personalInformation, if (allowCache) cacheManager.personalInformation() else null)
+                ?.apply { cacheManager.personalInformation(this) }
     }
 
     override fun updateAvailableSkills(allowCache: Boolean): List<Skill> {
@@ -48,5 +51,9 @@ class ProfileModel(api: ApiService, store: CredentialsStore, applicationContext:
     override fun removeSkill(skill: Skill): Skill? {
         return apiCall({ api.removeSkill(it, skill) }, null)
                 ?.let { skill }
+    }
+
+    override fun updateReferences(list: List<Reference>): List<Reference>? {
+        return apiCall({ api.myReferences(it, list) }, null)
     }
 }

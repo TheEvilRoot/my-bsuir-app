@@ -3,7 +3,7 @@ package com.theevilroot.mybsuir.common
 import android.content.Context
 import com.theevilroot.mybsuir.announcements.AnnouncementsModel
 import com.theevilroot.mybsuir.announcements.IAnnouncementsModel
-import com.theevilroot.mybsuir.common.data.*
+import com.theevilroot.mybsuir.common.cache.ICacheManager
 import com.theevilroot.mybsuir.group.GroupModel
 import com.theevilroot.mybsuir.group.IGroupModel
 import com.theevilroot.mybsuir.markbook.IMarkBookModel
@@ -21,12 +21,12 @@ import com.theevilroot.mybsuir.schedule.ScheduleModel
 import java.util.*
 
 class SharedModel (
-    apiService: ApiService, store: CredentialsStore, context: Context
-) : IProfileModel by ProfileModel(apiService, store, context),
-    IPapersModel by PapersModel(apiService, store, context),
-    IGroupModel by GroupModel(apiService, store, context),
-    IMarkBookModel by MarkBookModel(apiService, store, context),
-    IMarkSheetsModel by MarkSheetsModel(apiService, store, context),
-    IAnnouncementsModel by AnnouncementsModel(apiService, store, context),
-    IScheduleModel by ScheduleModel(apiService, store, context),
-    IPreferencesModel by PreferencesModel(apiService, store, context)
+    apiService: ApiService, store: CredentialsStore, context: Context, cacheManager: ICacheManager
+) : IProfileModel by ProfileModel(apiService, store, context, cacheManager),
+    IPapersModel by PapersModel(apiService, store, context, cacheManager),
+    IGroupModel by GroupModel(apiService, store, context, cacheManager),
+    IMarkBookModel by MarkBookModel(apiService, store, context, cacheManager),
+    IMarkSheetsModel by MarkSheetsModel(apiService, store, context, cacheManager),
+    IAnnouncementsModel by AnnouncementsModel(apiService, store, context, cacheManager),
+    IScheduleModel by ScheduleModel(apiService, store, context, cacheManager),
+    IPreferencesModel by PreferencesModel(apiService, store, context, cacheManager)

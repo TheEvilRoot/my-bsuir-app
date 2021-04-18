@@ -3,6 +3,7 @@ package com.theevilroot.mybsuir.common.controller
 import com.theevilroot.mybsuir.common.CredentialsStore
 import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.login.LoginModel
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -20,6 +21,11 @@ class CacheController (
                 if (isLoaded) data
                 else Single.create { i -> i.onError(NoCredentialsException()) }
             }
+    }
+
+    fun preloadCacheAndCall(task: Completable, checkMemory: Boolean = true): Completable {
+        return preloadCacheAndCall(task.toSingleDefault(Unit), checkMemory)
+                .ignoreElement()
     }
 
     /**

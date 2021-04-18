@@ -3,6 +3,7 @@ package com.theevilroot.mybsuir.common
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Build
+import com.theevilroot.mybsuir.common.cache.ICacheManager
 import com.theevilroot.mybsuir.common.data.InternalException
 import com.theevilroot.mybsuir.common.data.NoCredentialsException
 import com.theevilroot.mybsuir.common.data.ReAuthRequiredException
@@ -12,7 +13,8 @@ import java.net.UnknownHostException
 open class  ApiModel(
         val api: ApiService,
         val store: CredentialsStore,
-        val applicationContext: Context
+        val applicationContext: Context,
+        val cacheManager: ICacheManager
 ) {
 
     private fun Context.isNetworkAvailable(): Boolean =

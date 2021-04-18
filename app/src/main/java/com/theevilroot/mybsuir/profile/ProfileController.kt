@@ -4,6 +4,7 @@ import com.theevilroot.mybsuir.common.SharedModel
 import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.profile.data.ProfileInfo
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.CompletableTransformer
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
@@ -65,7 +66,7 @@ class ProfileController (
             val skill = skillName.trim()
             val available = data.firstOrNull { it.name.equals(skill, ignoreCase=true) }
                 ?: model.newSkill(NewSkill(skill))
-                ?: return@create it.onError(InternalException("Неудалось добавить новый навык"))
+                ?: return@create it.onError(InternalException("Не удалось добавить новый навык"))
 
             model.addSkill(available)
             it.onComplete()
@@ -88,5 +89,13 @@ class ProfileController (
                  val count = model.getDaySchedule(true, Date())
                          ?.uniqueCount()
                 it.onSuccess(count)
+            }.subscribeOn(Schedulers.io())
+
+    fun setReferences(list: List<Reference>): Single<List<Reference>> =
+            Single.create<List<Reference>> {
+                val result = model.updateReferences(list)
+                if (result == null)
+                    it.onError(InternalException("Не удалось обновить ссылки"))
+                it.onSuccess(result)
             }.subscribeOn(Schedulers.io())
 }

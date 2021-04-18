@@ -1,9 +1,6 @@
 package com.theevilroot.mybsuir.profile
 
-import com.theevilroot.mybsuir.common.data.PersonalCV
-import com.theevilroot.mybsuir.common.data.PersonalInformation
-import com.theevilroot.mybsuir.common.data.Skill
-import com.theevilroot.mybsuir.common.data.NewSkill
+import com.theevilroot.mybsuir.common.data.*
 
 interface IProfileModel {
 
@@ -20,5 +17,7 @@ interface IProfileModel {
     fun updateSummary(text: String): String?
 
     fun removeSkill(skill: Skill): Skill?
+
+    fun updateReferences(list: List<Reference>): List<Reference>?
 
 }

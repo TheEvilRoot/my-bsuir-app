@@ -4,9 +4,15 @@ import android.content.Context
 import com.theevilroot.mybsuir.common.ApiModel
 import com.theevilroot.mybsuir.common.ApiService
 import com.theevilroot.mybsuir.common.CredentialsStore
+import com.theevilroot.mybsuir.common.cache.ICacheManager
 import com.theevilroot.mybsuir.common.data.MarkSheet
 
-class MarkSheetsModel(api: ApiService, store: CredentialsStore, context: Context) : ApiModel(api, store, context), IMarkSheetsModel {
+class MarkSheetsModel(
+        api: ApiService,
+        store: CredentialsStore,
+        context: Context,
+        cacheManager: ICacheManager,
+        ) : ApiModel(api, store, context, cacheManager), IMarkSheetsModel {
 
     private val markSheetsCache: MutableList<MarkSheet> = mutableListOf()
 

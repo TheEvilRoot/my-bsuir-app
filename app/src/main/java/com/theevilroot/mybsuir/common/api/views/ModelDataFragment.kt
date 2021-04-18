@@ -20,7 +20,7 @@ import java.security.cert.CertPathValidatorException
 
 abstract class ModelDataFragment<State, MT>(@LayoutRes layoutRes: Int) : BaseFragment<State>(layoutRes) {
 
-    private val cacheController by instance<CacheController>()
+    internal val cacheController by instance<CacheController>()
 
     protected abstract fun getLoadingState(): State
     protected abstract fun getFilledState(it: MT): State

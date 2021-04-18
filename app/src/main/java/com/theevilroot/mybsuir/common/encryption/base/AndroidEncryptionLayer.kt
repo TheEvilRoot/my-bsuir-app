@@ -19,7 +19,7 @@ abstract class AndroidEncryptionLayer : IEncryptionLayer {
         }
     }
 
-    protected fun packData(iv: ByteArray, data: ByteArray): ByteArray {
+    fun packData(iv: ByteArray, data: ByteArray): ByteArray {
         val ivLength = iv.size
         val dataLength = data.size
         return JavaUtils.serializeInt(ivLength) +
@@ -29,7 +29,7 @@ abstract class AndroidEncryptionLayer : IEncryptionLayer {
                     .toList().toByteArray()
     }
 
-    protected fun unpackData(data: ByteArray): Pair<ByteArray, ByteArray>? {
+    fun unpackData(data: ByteArray): Pair<ByteArray, ByteArray>? {
         if (data.size < 8)
             return null
 

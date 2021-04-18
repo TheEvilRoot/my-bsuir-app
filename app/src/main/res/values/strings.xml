@@ -70,7 +70,7 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
     <string name="paper_destination_hint"><![CDATA[Для ввода собственного места назначения справки выберите Деканат -> иное]]></string>
     <string name="skill_add_title">Добавление навыка</string>
     <string name="skill_add_hint">Навык…</string>
-    <string name="skill_add">Добавить</string>
+    <string name="add_title">Добавить</string>
     <string name="skill_add_tip">Начните вводить для отображения подсказок</string>
     <string name="announcements_title">Объявления</string>
     <string name="no_announcements">Здесь будут отображаться объявления…</string>
@@ -91,4 +91,8 @@ Quisque semper pellentesque posuere. Aenean lectus eros, congue non turpis ut, c
     <string name="yes_title">Да</string>
     <string name="no_title">Нет</string>
     <string name="preferences_title_access">Доступ</string>
+    <string name="reference_add_title">Добавление ссылки</string>
+    <string name="reference_add_hint">Название ссылки…</string>
+    <string name="reference_add_link_hint">Ссылка…</string>
+
 </resources>

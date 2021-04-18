@@ -3,7 +3,6 @@ package com.theevilroot.mybsuir.profile
 import android.app.Dialog
 import android.content.Context
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -28,7 +27,6 @@ import com.theevilroot.mybsuir.announcements.AnnouncementsController
 import com.theevilroot.mybsuir.announcements.holders.AnnouncementViewHolder
 import com.theevilroot.mybsuir.common.SharedModel
 import com.theevilroot.mybsuir.common.TextWatchWrapper
-import com.theevilroot.mybsuir.common.adapters.AddableAdapter
 import com.theevilroot.mybsuir.common.adapters.SimpleAdapter
 import com.theevilroot.mybsuir.common.adapters.SimpleRangedAdapter
 import com.theevilroot.mybsuir.common.api.views.ModelDataFragment
@@ -37,20 +35,27 @@ import com.theevilroot.mybsuir.common.data.*
 import com.theevilroot.mybsuir.common.utils.asVisibility
 import com.theevilroot.mybsuir.profile.adapters.SkillsAdapter
 import com.theevilroot.mybsuir.profile.data.BadgeType
+import com.theevilroot.mybsuir.profile.dialogs.ReferenceAddDialog
+import com.theevilroot.mybsuir.profile.dialogs.SkillAddDialog
+import com.theevilroot.mybsuir.profile.dialogs.SummaryHelpDialog
+import com.theevilroot.mybsuir.profile.dialogs.SummarySubmitDialog
 import com.theevilroot.mybsuir.profile.holders.ReferenceViewHolder
 import com.theevilroot.mybsuir.profile.holders.SkillSuggestionViewHolder
-import com.theevilroot.mybsuir.profile.holders.SkillsViewHolder
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.d_reference_add.view.*
 import kotlinx.android.synthetic.main.d_skill_add.view.*
 import kotlinx.android.synthetic.main.f_profile.view.*
 import kotlinx.android.synthetic.main.i_profile_content.*
 import kotlinx.android.synthetic.main.i_profile_content.view.*
 import kotlinx.android.synthetic.main.i_profile_header.view.*
 import org.kodein.di.generic.instance
+import java.net.URL
+import kotlin.contracts.ExperimentalContracts
 import kotlin.math.abs
 
+@ExperimentalContracts
 class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, ProfileInfo>(R.layout.f_profile) {
 
     sealed class ProfileViewState {
@@ -93,15 +98,24 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
 
     private val skillsAdapter by lazy { SkillsAdapter(::onSkillAddClick, ::onSkillClick, ::onSkillRemove) }
     private val referencesAdapter by lazy { SimpleAdapter(R.layout.i_reference, ::ReferenceViewHolder) }
-    private val skillsSuggestionAdapter by lazy { SimpleRangedAdapter(R.layout.i_skill,
-        ::SkillSuggestionViewHolder) }
     private val announcementsAdapter by lazy { SimpleAdapter(R.layout.i_announcement,
             ::AnnouncementViewHolder) }
     private val summaryTextListener = TextWatchWrapper(onTextChanged = ::onSummaryEditChange)
 
-    private var skillAddDialog: Dialog? = null
-    private var summarySubmitDialog: Dialog? = null
-    private var summaryHelpDialog: Dialog? = null
+    private val summarySubmitDialog by lazy { SummarySubmitDialog(cacheController, controller,
+            ::onSummaryUpdated, ::onSummaryUpdateFailed) }
+    private val summaryHelpDialog by lazy { SummaryHelpDialog() }
+    private val referenceAddDialog by lazy { ReferenceAddDialog(cacheController, controller, {
+        referencesAdapter.setData(it)
+    }, { message ->
+        view?.let { Toast.makeText(context, message, Toast.LENGTH_SHORT).show() }
+    }) }
+    private val skillAddDialog by lazy { SkillAddDialog({
+        view?.updateData(
+                useCurrentCredentials = true,
+                forceUpdate = true
+        ) }, cacheController, controller) }
+
 
     override fun View.onView() {
         with(skills_view) {
@@ -134,6 +148,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
             findNavController().navigate(R.id.fragment_sheets)
         }
 
+
         button_settings.setOnClickListener {
             findNavController().navigate(R.id.fragment_preferences)
         }
@@ -144,7 +159,12 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         }
 
         info_hint.setOnClickListener {
-            showSummaryHelpDialog()
+            summaryHelpDialog.createNew(context)
+        }
+        reference_add.setOnClickListener {
+            referenceAddDialog.createNew(context, bundleOf(
+                "list" to referencesAdapter.list.toTypedArray()
+            ))
         }
 
         updateAnnouncements(emptyList())
@@ -291,7 +311,7 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
     }
 
     private fun onSkillAddClick(v: View) = view?.run {
-        showSkillAddDialog()
+        skillAddDialog.createNew(context)
     }
 
     private fun onSkillClick(skill: Skill, index: Int) {
@@ -328,15 +348,12 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
         if (text == original)
             return setInfoViewState()
 
-        showSummarySubmitDialog(text, {
-            applyState(ProfileViewState.ProfileLoading)
-            controller.updateSummary(text)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::onSummaryUpdated)
-                    { onSummaryUpdateFailed(true) }
-        }) {
-            onSummaryUpdateFailed(false)
-        }
+        val displayText = if (text.isBlank()) "<b>&lt;пусто&gt;</b>" else text
+
+        summarySubmitDialog.createNew(context, bundleOf(
+            "displayText" to displayText,
+            "text" to text
+        ))
     }
 
     private fun onSummaryUpdated() = view?.run {
@@ -348,94 +365,6 @@ class ProfileFragment : ModelDataFragment<ProfileFragment.ProfileViewState, Prof
             Toast.makeText(context, "Не удалось обновить информацию.", Toast.LENGTH_LONG).show()
         }
         updateData(useCurrentCredentials = true, forceUpdate = false)
-    }
-
-    private fun View.showSkillAddDialog() {
-        skillAddDialog?.dismiss()
-
-        val compositeDisposable = CompositeDisposable()
-        skillAddDialog = MaterialDialog(context, BottomSheet(LayoutMode.MATCH_PARENT)).apply {
-            customView(R.layout.d_skill_add)
-            title(R.string.skill_add_title)
-            onPreShow { skillsSuggestionAdapter.setData(emptyList()) }
-            onDismiss { compositeDisposable.dispose() }
-            show {
-                getCustomView().initSkillAddDialog(this, compositeDisposable)
-            }
-        }
-    }
-
-    private fun View.initSkillAddDialog(dialog: MaterialDialog, compositeDisposable: CompositeDisposable) {
-        skill_add_suggestions.layoutManager = LinearLayoutManager(context,
-            LinearLayoutManager.HORIZONTAL, false)
-        skill_add_suggestions.adapter = skillsSuggestionAdapter
-        skill_add_hint.visibility = View.VISIBLE
-        skillsSuggestionAdapter.onItemClick = {
-            skill_add_field.setText(it.name) }
-        skill_add_submit.isEnabled = false
-        skill_add_field.addTextChangedListener {
-            val text = it?.toString()
-            if (text != null && compositeDisposable.size() == 0) {
-                controller.suggestSkills(text, true)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ data ->
-                        skill_add_hint.visibility = View.GONE
-                        skillsSuggestionAdapter.setData(data)
-                        compositeDisposable.clear()
-                    }) { compositeDisposable.clear() }
-                        .let(compositeDisposable::add)
-
-            }
-            skill_add_submit.isEnabled = text != null
-        }
-        skill_add_submit.setOnClickListener {
-            val text = skill_add_field.text?.toString()
-                ?: return@setOnClickListener
-            skill_add_submit.isEnabled = false
-            controller.submitSkill(text)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    dialog.dismiss()
-                    this@ProfileFragment.view?.updateData(
-                        useCurrentCredentials = true,
-                        forceUpdate = true
-                    )
-                }) {
-                    skill_add_hint.visibility = View.VISIBLE
-                    skill_add_hint.text = it.localizedMessage
-                    skill_add_submit.isEnabled = true
-                    skillsSuggestionAdapter.setData(emptyList())
-                }
-        }
-    }
-
-    private fun View.showSummarySubmitDialog(text: String, onSubmit: View.(String) -> Unit, onCancel: View.() -> Unit) {
-        summarySubmitDialog?.dismiss()
-        summarySubmitDialog = MaterialDialog(context).apply {
-            title(R.string.summary_submit_title)
-            val displayText = if (text.isBlank()) "<b>&lt;пусто&gt;</b>" else text
-            message(text=context.getString(R.string.summary_submit_message, displayText)) { html() }
-            cancelable(true)
-            positiveButton(R.string.summary_submit) {
-                this@showSummarySubmitDialog.onSubmit(text)
-            }
-            negativeButton(R.string.cancel) {
-                this@showSummarySubmitDialog.onCancel()
-            }
-            onCancel { this@showSummarySubmitDialog.onCancel() }
-        }
-        summarySubmitDialog?.show()
-    }
-
-    private fun View.showSummaryHelpDialog() {
-        summaryHelpDialog?.dismiss()
-
-        summaryHelpDialog = MaterialDialog(context).apply {
-            title(R.string.info_title)
-            message(R.string.info_help) { html() }
-            cancelable(true)
-            show()
-        }
     }
 
     private fun View.updateAnnouncements(list: List<Announcement>) {

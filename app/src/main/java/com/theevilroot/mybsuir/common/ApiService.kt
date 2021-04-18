@@ -55,4 +55,7 @@ interface ApiService {
     @PUT("portal/{field}")
     fun savePreference(@Header("Cookie") token: String, @Path("field") field: String, @Body body: Map<String, Boolean>): Call<ResponseBody>
 
+    @POST("portal/myReferences")
+    fun myReferences(@Header("Cookie") token: String, @Body references: List<Reference>): Call<List<Reference>>
+
 }
